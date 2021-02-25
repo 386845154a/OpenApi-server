@@ -9,6 +9,7 @@ import com.github.hollykunge.openapi.vo.res.base.TableResultResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class BaseController<Biz extends BaseBiz, Entity> {
     @Autowired
     protected Biz baseBiz;
 
+    @ApiIgnore
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
     public ObjectRestResponse<Entity> add(@RequestBody Entity entity) {
@@ -35,6 +37,7 @@ public class BaseController<Biz extends BaseBiz, Entity> {
         return new ObjectRestResponse<Entity>().rel(true);
     }
 
+    @ApiIgnore
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ObjectRestResponse<Entity> get(@PathVariable String id) {
@@ -44,6 +47,7 @@ public class BaseController<Biz extends BaseBiz, Entity> {
         return entityObjectRestResponse;
     }
 
+    @ApiIgnore
     @RequestMapping(value = "", method = RequestMethod.PUT)
     @ResponseBody
     public ObjectRestResponse<Entity> update(@RequestBody @Valid Entity entity) {
@@ -51,6 +55,7 @@ public class BaseController<Biz extends BaseBiz, Entity> {
         return new ObjectRestResponse<Entity>().rel(true);
     }
 
+    @ApiIgnore
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public ObjectRestResponse<Entity> remove(@PathVariable String id) {
@@ -59,6 +64,7 @@ public class BaseController<Biz extends BaseBiz, Entity> {
         return new ObjectRestResponse<Entity>().rel(true).data(deletingObject);
     }
 
+    @ApiIgnore
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
     public ListRestResponse<List<Entity>> all() {
@@ -66,6 +72,7 @@ public class BaseController<Biz extends BaseBiz, Entity> {
         return new ListRestResponse("",list.size(),list);
     }
 
+    @ApiIgnore
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     @ResponseBody
     public TableResultResponse<Entity> page(@RequestParam Map<String, Object> params) {

@@ -11,19 +11,31 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author: zhuqz
  * @date: 2020/6/19 16:27
- * @description: 应用
+ * @description: 应用管理
  */
-@Api(tags="应用注册")
+@Api(tags="应用管理")
 @RestController
 @RequestMapping("/app")
 public class AppController  extends BaseController<AppBiz, App> {
 
     /**
-     * 添加
+     * 应用登录
+     * @param
+     * @return
+     */
+    @ApiOperation(value = "登录平台", notes = "以应用的身份登录平台", httpMethod = "GET")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ObjectRestResponse<String> login(@RequestParam("id") String id) {
+        App app = baseBiz.selectById(id);
+        return new ObjectRestResponse<>().data(app).rel(true);
+    }
+    /**
+     * 注册
      * @param app
      * @return
      */
