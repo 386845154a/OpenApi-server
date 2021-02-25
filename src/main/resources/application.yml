@@ -1,0 +1,56 @@
+server:
+  port: 8030
+  servlet:
+    context-path: /OpenApi
+spring:
+  application:
+    name: openapi
+  datasource:
+    tomcat:
+      max-idle: 10
+      min-idle: 5
+      initial-size: 5
+      max-wait: 10000
+    driverClassName: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:orcl
+    username: lark_openapi
+    password: data_openapi
+    druid:
+      max-active: 18
+      initial-size: 3
+      min-idle: 3
+      max-wait: 250000
+      time-between-eviction-runs-millis: 250000
+      min-evictable-idle-time-millis: 120000
+      validation-query: select 'x' from dual
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      max-open-prepared-statements: 20
+      filter: stat,wall,slf4j
+  redis:
+    lettuce:
+      pool:
+        max-active: 300
+        max-idle: 100
+        max-wait: 5000ms
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 7
+    timeout: 5000ms
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+ribbon:
+  eureka:
+    enabled: true
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+  OkToRetryOnAllOperations: false
+feign:
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
