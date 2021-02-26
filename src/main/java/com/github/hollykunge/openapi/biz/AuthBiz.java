@@ -53,7 +53,7 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         RegisterResVo registerResVo = new RegisterResVo();
         registerResVo.setCode(ConfigConstants.RES_SUCCESS);
         registerResVo.setMsg(ConfigConstants.RES_SUCCESS_MSG);
-        if(app == null || app.getAppName() == null || "".equals(app.getAppName())  || app.getMainUrl() == null || "".equals(app.getMainUrl())){
+        if(app == null || app.getName() == null || "".equals(app.getName())  || app.getMainUrl() == null || "".equals(app.getMainUrl())){
             registerResVo.setCode(ConfigConstants.RES_ERROR_REGISTER_APP_NULL);
             registerResVo.setMsg(ConfigConstants.RES_ERROR_REGISTER_APP_NULL_MSG);
             return registerResVo;
@@ -61,7 +61,7 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         Example example = new Example(App.class);
         Example.Criteria criteria = example.createCriteria();
         String tableColName = "name";
-        criteria.andEqualTo(tableColName, app.getAppName());
+        criteria.andEqualTo(tableColName, app.getName());
         List<App> list = appBiz.selectByExample(example);
         if(!list.isEmpty()){
             registerResVo.setCode(ConfigConstants.RES_ERROR_REGISTER_NAME_EXIST);

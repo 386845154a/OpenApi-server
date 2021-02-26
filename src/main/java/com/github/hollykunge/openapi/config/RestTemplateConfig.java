@@ -1,5 +1,6 @@
 package com.github.hollykunge.openapi.config;
 
+//import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -19,6 +20,7 @@ public class RestTemplateConfig {
      * @return
      */
     @Bean(name="balancedRestTemplate")
+    //@LoadBalanced
     public RestTemplate balancedRestTemplate(ClientHttpRequestFactory factory) {
         return new RestTemplate(factory);
     }

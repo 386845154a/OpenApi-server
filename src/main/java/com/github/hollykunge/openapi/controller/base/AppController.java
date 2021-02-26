@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @date: 2020/6/19 16:27
  * @description: 应用
  */
-@Api(tags="应用注册")
+//@Api(tags="应用注册")
 @RestController
 @RequestMapping("/app")
 public class AppController  extends BaseController<AppBiz, App> {
@@ -27,11 +27,12 @@ public class AppController  extends BaseController<AppBiz, App> {
      * @param app
      * @return
      */
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ApiOperation(value = "添加注册app", notes = "进行应用注册，获取系统分配的应用ID", httpMethod = "POST")
+    //@RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveApp", method = RequestMethod.POST)
+    //@ApiOperation(value = "添加注册app", notes = "进行应用注册，获取系统分配的应用ID", httpMethod = "POST")
     @ResponseBody
     public ObjectRestResponse<ResVo> saveApp(@RequestBody App app) {
-        app.setAppId(UUIDUtils.generateShortUuid());
+        //app.setAppId(UUIDUtils.generateShortUuid());
         baseBiz.insertSelective(app);
         ResVo res = new ResVo();
         res.setCode(ConfigConstants.RES_SUCCESS);

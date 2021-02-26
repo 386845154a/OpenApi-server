@@ -28,12 +28,18 @@ public class App  extends BaseEntity {
     private String status;
     @Column(name = "NAME")
     @ApiModelProperty("应用名称")
-    private String appName;
+    private String name;
     @Column(name = "DESCRIPTION")
     @ApiModelProperty("应用描述")
     private String description;
     @Column(name = "MAIN_URL")
     @ApiModelProperty("应用地址")
     private String mainUrl;
+    @Column(name = "CONTACT_NAME")
+    @ApiModelProperty("联系人")
+    private String contactName;
+    @Column(name = "CONTACT_PHONE")
+    @ApiModelProperty("联系人电话")
+    private String contactPhone;
 
 }

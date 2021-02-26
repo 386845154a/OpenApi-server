@@ -11,12 +11,15 @@ import com.github.hollykunge.openapi.vo.base.ResVo;
 import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 /**
  * @author: zhuqz
  * @date: 2020/6/28 13:32
  * @description: token管理
  */
+@Api(tags="应用、服务注册，申请接口访问权限，获取token")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -28,6 +31,7 @@ public class AuthController {
      * @return
      */
     @RequestMapping(value = "/registerApp", method = RequestMethod.POST)
+    @ApiOperation(value = "添加注册app", notes = "进行应用注册，获取系统分配的应用ID", httpMethod = "POST")
     @ResponseBody
     public ObjectRestResponse<RegisterResVo> registerApp(@RequestBody App app) {
         RegisterResVo registerResVo = authBiz.registerApp(app);
