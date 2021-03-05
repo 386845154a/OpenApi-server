@@ -54,3 +54,12 @@ feign:
     enabled: true
   httpclient:
     enabled: false
+jwt:
+  secret: "this is a secret"
+  #expiration: 1800
+  #注意前面有空格
+  token-head: "Bearer "
+  header-name: "Authorization"
+  access-expiration: 3600
+  roles-expiration: 300
+  refresh-expiration: 604800

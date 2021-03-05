@@ -4,6 +4,9 @@ import com.github.hollykunge.openapi.biz.AuthBiz;
 import com.github.hollykunge.openapi.entity.App;
 import com.github.hollykunge.openapi.entity.Apply;
 import com.github.hollykunge.openapi.entity.Service;
+import com.github.hollykunge.openapi.redis.RedisUtil;
+import com.github.hollykunge.openapi.security.jwt.JwtProperties;
+import com.github.hollykunge.openapi.security.jwt.JwtTokenUtil;
 import com.github.hollykunge.openapi.vo.auth.RegisterResVo;
 import com.github.hollykunge.openapi.vo.auth.TokenParamVo;
 import com.github.hollykunge.openapi.vo.auth.TokenResVo;
@@ -25,6 +28,12 @@ import io.swagger.annotations.ApiOperation;
 public class AuthController {
     @Autowired
     AuthBiz authBiz;
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    JwtProperties jwtProperties;
+    @Autowired
+    RedisUtil redisUtil;
     /**
      * 注册应用
      * @param app 填写名称 描述 mainUrl

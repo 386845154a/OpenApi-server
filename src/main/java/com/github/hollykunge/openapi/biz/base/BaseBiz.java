@@ -16,12 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by hollykunge
- * Date: 17/1/13
- * Time: 15:13
- * Version 1.0.0
- */
 public abstract class BaseBiz<M extends Mapper<T>, T> {
     @Autowired
     protected M mapper;
@@ -134,33 +128,6 @@ public abstract class BaseBiz<M extends Mapper<T>, T> {
             Example.Criteria criteria = example.createCriteria();
             for (Map.Entry<String, Object> entry : query.entrySet()) {
                 criteria.andNotEqualTo(entry.getKey(), "%" + entry.getValue().toString() + "%");
-            }
-        }
-        Page<Object> result = PageHelper.startPage(query.getPageNo(), query.getPageSize());
-        List<T> list = mapper.selectByExample(example);
-        return new TableResultResponse<T>(result.getPageSize(), result.getPageNum() ,result.getPages(), result.getTotal(), list);
-    }
-
-    /**
-     * 查询安全管理员日志
-     * 双参数不等于
-     * @param query
-     * @return
-     */
-    public TableResultResponse<T> selectByQueryM(Query query,String type) {
-        Class<T> clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
-        Example example = new Example(clazz);
-        if(query.entrySet().size()>0) {
-            Example.Criteria criteria = example.createCriteria();
-            for (Map.Entry<String, Object> entry : query.entrySet()) {
-                List<String> valueList = new ArrayList<>();
-                valueList = (List<String>) entry.getValue();
-                if (type.equals("log")){
-                    criteria.andNotEqualTo(entry.getKey(),  valueList.get(0) ).andNotEqualTo(entry.getKey(),  valueList.get(1));
-                }
-                else if (type.equals("Security")){
-                    criteria.orEqualTo(entry.getKey(),  valueList.get(0) ).orEqualTo(entry.getKey(),  valueList.get(1) );
-                }
             }
         }
         Page<Object> result = PageHelper.startPage(query.getPageNo(), query.getPageSize());

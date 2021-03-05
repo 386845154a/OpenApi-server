@@ -214,7 +214,7 @@ public class ApiServiceImpl implements ApiService {
         String serviceCanUse = "1";
         if(service == null || !service.getStatus().equals(serviceCanUse)){
             apiResVo.setCode(ConfigConstants.RES_ERROR_NOT_EXISTS_API);
-            apiResVo.setMsg(ConfigConstants.RES_ERROR_NOT_EXISTS_APP_MSG);
+            apiResVo.setMsg(ConfigConstants.RES_ERROR_NOT_EXISTS_API_MSG);
             res.put(validField,false);
             return res;
         }

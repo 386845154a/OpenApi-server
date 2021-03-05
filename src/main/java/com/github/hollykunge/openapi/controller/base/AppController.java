@@ -13,6 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 /**
  * @author: zhuqz
  * @date: 2020/6/19 16:27
@@ -27,23 +29,24 @@ public class AppController  extends BaseController<AppBiz, App> {
      * 应用登录
      * @param
      * @return
-     */
+     *//*
     @ApiOperation(value = "登录平台", notes = "以应用的身份登录平台", httpMethod = "GET")
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ObjectRestResponse<String> login(@RequestParam("id") String id) {
         App app = baseBiz.selectById(id);
         return new ObjectRestResponse<>().data(app).rel(true);
-    }
+    }*/
     /**
      * 注册
      * @param app
      * @return
      */
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ApiOperation(value = "添加注册app", notes = "进行应用注册，获取系统分配的应用ID", httpMethod = "POST")
+    //@RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveApp", method = RequestMethod.POST)
+    //@ApiOperation(value = "添加注册app", notes = "进行应用注册，获取系统分配的应用ID", httpMethod = "POST")
     @ResponseBody
     public ObjectRestResponse<ResVo> saveApp(@RequestBody App app) {
-        app.setAppId(UUIDUtils.generateShortUuid());
+       // app.setAppId(UUIDUtils.generateShortUuid());
         baseBiz.insertSelective(app);
         ResVo res = new ResVo();
         res.setCode(ConfigConstants.RES_SUCCESS);
