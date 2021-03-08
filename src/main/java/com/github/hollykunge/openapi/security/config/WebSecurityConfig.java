@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/auth/getToken").permitAll()
             .anyRequest().authenticated()
             .and()
-        .formLogin()
+       /* .formLogin()
             //登录跳转页面
             .loginPage("/auth/login.html")
             //.usernameParameter("username").passwordParameter("password")  //username和password对应前端表单的name键
@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .successHandler(myAuthenticationSuccessHandler)
             .failureHandler(myAuthenticationFailureHandler)
             .permitAll()
-            .and()
+            .and()*/
         .logout()
             //默认为/logout，不用改
             .logoutUrl("/logout")  

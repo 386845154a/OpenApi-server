@@ -65,7 +65,7 @@ public class JwtokenAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);*/
         //如果不是登录
-        if(!request.getRequestURI().equals("/OpenApi/auth/login")){
+        //if(!request.getRequestURI().equals("/OpenApi/auth/login")){
             // 取出auth
             String authHeader = request.getHeader(jwtProperties.getHeaderName());
 
@@ -101,7 +101,7 @@ public class JwtokenAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             }
-        }
+        //}
         filterChain.doFilter(request, response);
     }
 }

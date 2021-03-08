@@ -10,13 +10,22 @@ import com.github.hollykunge.openapi.config.UserAuthContonstants;
 import com.github.hollykunge.openapi.redis.RedisUtil;
 import com.github.hollykunge.openapi.security.jwt.JwtProperties;
 import com.github.hollykunge.openapi.security.jwt.JwtTokenUtil;
+import com.github.hollykunge.openapi.security.param.LoginParam;
 import com.github.hollykunge.openapi.security.param.RefreshTokenParam;
 import com.github.hollykunge.openapi.security.param.TokenParam;
-import com.github.hollykunge.openapi.vo.RefreshUesrTokenVo;
+import com.github.hollykunge.openapi.security.service.MyUserDetailsService;
+import com.github.hollykunge.openapi.security.util.MyUserDetails;
+import com.github.hollykunge.openapi.vo.res.LoginSuccessTokenVo;
+import com.github.hollykunge.openapi.vo.res.RefreshUesrTokenVo;
 import com.github.hollykunge.openapi.vo.base.ResVo;
 import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author: zhuqz
@@ -32,7 +41,55 @@ public class UserAuthController {
     JwtProperties jwtProperties;
     @Autowired
     RedisUtil redisUtil;
-
+    @Autowired
+    private MyUserDetailsService myUserDetailsService;
+    @Lazy
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    /**
+     * rest登录 不使用form登录
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectRestResponse<LoginSuccessTokenVo> login(@RequestBody LoginParam param){
+        String userName = param.getUserName();
+        String pwd = param.getPwd();
+        //根据输入的用户密码，读取数据库中信息
+        MyUserDetails user = (MyUserDetails) myUserDetailsService.loadUserByUsername(userName);
+        //判断是否有效用户
+        if (!user.isEnabled()) {
+            throw new DisabledException("USER DISABLE");
+        } else if (!user.isAccountNonLocked()) {
+            throw new LockedException("USER LOCKED");
+        } else if (!user.isAccountNonExpired()) {
+            throw new AccountExpiredException("USER EXPIRED");
+        } else if (!user.isCredentialsNonExpired()) {
+            throw new CredentialsExpiredException("USER LOGOUT");
+        }
+        //验证密码
+        if (!passwordEncoder.matches(pwd, user.getPassword())) {
+            throw new BadCredentialsException("PASSWORD INVALID!");
+        }
+        // 生成新token
+        Map<String,String> tokens = jwtTokenUtil.generateToken(user);
+        String accesstoken = tokens.get(jwtTokenUtil.getAccessTokenKey());
+        String refreshtoken = tokens.get(jwtTokenUtil.getRefreshTokenKey());
+        String rolestoken = tokens.get(jwtTokenUtil.getRoleTokenKey());
+        // 保存到 redis
+        redisUtil.set(jwtTokenUtil.getAccessTokenKey(userName),accesstoken);
+        redisUtil.expire(jwtTokenUtil.getAccessTokenKey(userName), jwtProperties.getAccessExpiration());
+        redisUtil.set(jwtTokenUtil.getRefreshTokenKey(userName),refreshtoken);
+        redisUtil.expire(jwtTokenUtil.getRefreshTokenKey(userName),jwtProperties.getRefreshExpiration());
+        redisUtil.set(jwtTokenUtil.getRoleTokenKey(userName), rolestoken);
+        redisUtil.expire(jwtTokenUtil.getRoleTokenKey(userName), jwtProperties.getRolesExpiration());
+        LoginSuccessTokenVo loginSuccessTokenVo = new LoginSuccessTokenVo();
+        loginSuccessTokenVo.setCode("200");
+        loginSuccessTokenVo.setToken(accesstoken);
+        loginSuccessTokenVo.setRefreshToken(refreshtoken);
+        return new ObjectRestResponse<>().rel(true).data(loginSuccessTokenVo);
+    }
     /**
      * 刷新token
      * @param refreshTokenParam

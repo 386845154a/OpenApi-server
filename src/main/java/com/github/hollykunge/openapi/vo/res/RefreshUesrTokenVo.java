@@ -1,4 +1,4 @@
-package com.github.hollykunge.openapi.vo;
+package com.github.hollykunge.openapi.vo.res;
 
 import com.github.hollykunge.openapi.vo.base.ResVo;
 import lombok.Data;

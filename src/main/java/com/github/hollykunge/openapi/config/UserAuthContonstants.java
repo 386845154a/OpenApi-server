@@ -20,6 +20,10 @@ public class UserAuthContonstants {
     public final  static String REFRESHTOKEN_AUTHORITY_FORMAT_ERROR_TIP  = "refreshToken格式错误";
     public final  static String TOKEN_NONE_CODE = "100405";
     public final  static String TOKEN_NONE_TIP = "没有token";
+    public final  static String TOKEN_AUTHORITY_NO_CODE = "100406";
+    public final  static String TOKEN_AUTHORITY_NO_TIP = "权限不足";
+    public final  static String TOKEN_NOTEXIST_OR_OVERDATE_CODE = "100407";
+    public final  static String TOKEN_NOTEXIST_OR_OVERDATE_TIP = "没有token或者token过期";
 
     public final  static String REFRESHTOKEN_EMPTY_TIP  = "refreshToken不能为空";
     public final  static String REFRESHTOKEN_OVERDATE_RELOGIN_TIP  = "刷新令牌过期，请重新登录";
