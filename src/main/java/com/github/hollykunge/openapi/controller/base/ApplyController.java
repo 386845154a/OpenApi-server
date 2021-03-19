@@ -3,10 +3,13 @@ package com.github.hollykunge.openapi.controller.base;
 import com.github.hollykunge.openapi.biz.ApplyBiz;
 import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.controller.base.base.BaseController;
-import com.github.hollykunge.openapi.vo.base.ResVo;
 import com.github.hollykunge.openapi.entity.Apply;
+import com.github.hollykunge.openapi.vo.base.ResVo;
+import com.github.hollykunge.openapi.vo.res.base.ListRestResponse;
 import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author: zhuqz
@@ -66,5 +69,20 @@ public class ApplyController extends BaseController<ApplyBiz, Apply> {
     public ObjectRestResponse<String> getApply(@RequestParam("id") String id) {
         Apply apply = baseBiz.selectById(id);
         return new ObjectRestResponse<>().data(apply).rel(true);
+    }
+
+    /**
+     * 申请列表
+     * @param appId
+     * @return
+     */
+    @RequestMapping(value = "/getApplyList", method = RequestMethod.GET)
+    public ListRestResponse<Apply> getApplyList(@RequestParam("appId") String appId) {
+        Apply apply = new Apply();
+        apply.setStatus("1");
+        apply.setAppId(appId);
+        List<Apply> services = baseBiz.selectList(apply);
+        ListRestResponse<Apply> restResponse = new ListRestResponse("",services.size(),services);
+        return restResponse;
     }
 }

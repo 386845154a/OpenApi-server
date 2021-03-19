@@ -49,9 +49,10 @@ public abstract class BaseBiz<M extends Mapper<T>, T> {
         mapper.insert(entity);
     }
 
-    public void insertSelective(T entity) {
-        EntityUtils.setCreatAndUpdatInfo(entity);
+    public String insertSelective(T entity) {
+        String id = EntityUtils.setCreatAndUpdatInfo(entity);
         mapper.insertSelective(entity);
+        return id;
     }
 
     public void delete(T entity) {

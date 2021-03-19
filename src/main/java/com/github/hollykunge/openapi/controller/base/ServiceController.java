@@ -3,10 +3,13 @@ package com.github.hollykunge.openapi.controller.base;
 import com.github.hollykunge.openapi.biz.ServiceBiz;
 import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.controller.base.base.BaseController;
-import com.github.hollykunge.openapi.vo.base.ResVo;
 import com.github.hollykunge.openapi.entity.Service;
+import com.github.hollykunge.openapi.vo.base.ResVo;
+import com.github.hollykunge.openapi.vo.res.base.ListRestResponse;
 import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author: zhuqz
@@ -66,5 +69,20 @@ public class ServiceController  extends BaseController<ServiceBiz, Service> {
     public ObjectRestResponse<Service> getService(@RequestParam("id") String id) {
         Service service = baseBiz.selectById(id);
         return new ObjectRestResponse<>().data(service).rel(true);
+    }
+
+    /**
+     * 服务列表
+     * @param appId
+     * @return
+     */
+    @RequestMapping(value = "/getServiceList", method = RequestMethod.GET)
+    public ListRestResponse<Service> getServiceList(@RequestParam("appId") String appId) {
+        Service service = new Service();
+        service.setStatus("1");
+        service.setAppId(appId);
+        List<Service> services = baseBiz.selectList(service);
+        ListRestResponse<Service> restResponse = new ListRestResponse("",services.size(),services);
+        return restResponse;
     }
 }

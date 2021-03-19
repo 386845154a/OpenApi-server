@@ -19,7 +19,7 @@ public class AppBiz  extends BaseBiz<AppMapper, App> {
         return null;
     }
     @Override
-    public void insertSelective(App entity) {
-        super.insertSelective(entity);
+    public String insertSelective(App entity) {
+        return super.insertSelective(entity);
     }
 }
