@@ -1,5 +1,5 @@
 ???prompt PL/SQL Developer import file
-prompt Created on 2021年3月5日 by Administrator
+prompt Created on 2021年3月19日 by Administrator
 set feedback off
 set define off
 prompt Creating API_APP...
@@ -25,7 +25,8 @@ create table API_APP
   appid         VARCHAR2(100),
   main_url      VARCHAR2(300),
   contact_name  VARCHAR2(100),
-  contact_phone VARCHAR2(40)
+  contact_phone VARCHAR2(40),
+  pwd           VARCHAR2(300)
 )
 tablespace WORKHUB
   pctfree 10
@@ -43,11 +44,11 @@ comment on table API_APP
 comment on column API_APP.id
   is 'appid';
 comment on column API_APP.secret
-  is '密码';
+  is 'app秘钥';
 comment on column API_APP.status
   is '状态1有效0无效';
 comment on column API_APP.name
-  is '名称';
+  is '名称 登录前端使用它';
 comment on column API_APP.description
   is '描述';
 comment on column API_APP.appid
@@ -58,6 +59,8 @@ comment on column API_APP.contact_name
   is '联系人';
 comment on column API_APP.contact_phone
   is '联系人电话';
+comment on column API_APP.pwd
+  is '前端登录使用它md5加密';
 create unique index UNIQUE_ID on API_APP (ID)
   tablespace WORKHUB
   pctfree 10
@@ -134,7 +137,16 @@ create table API_ROLE
 tablespace WORKHUB
   pctfree 10
   initrans 1
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table API_ROLE
+  is '该表暂时废弃';
 
 prompt Creating API_SERVICE...
 create table API_SERVICE
@@ -218,6 +230,8 @@ tablespace WORKHUB
     minextents 1
     maxextents unlimited
   );
+comment on table API_USER
+  is '该表暂时废弃';
 
 prompt Creating API_USER_ROLE...
 create table API_USER_ROLE
@@ -241,7 +255,16 @@ create table API_USER_ROLE
 tablespace WORKHUB
   pctfree 10
   initrans 1
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table API_USER_ROLE
+  is '该表暂时废弃';
 
 prompt Disabling triggers for API_APP...
 alter table API_APP disable all triggers;
@@ -256,21 +279,25 @@ alter table API_USER disable all triggers;
 prompt Disabling triggers for API_USER_ROLE...
 alter table API_USER_ROLE disable all triggers;
 prompt Loading API_APP...
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone)
-values ('GCVgIa72', '99bcaa38946ac4e02518ad4337c22333', '1', '金达开3333', '2222222', to_date('26-02-2021 09:25:36', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('26-02-2021 09:25:36', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'RoCY84PY', 'http://127.0.0.1:8080', '张三丰', '131111111111');
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone)
-values ('KSKUIzZh', 'cc2163f31a465c76f193ad3b11ce557b', '1', '金达开223', '2222222', to_date('07-08-2020 14:05:43', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:05:43', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'nGk50Hmd', 'http://192.0.0.1:8080', null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone)
-values ('2mxFJBVc', '92604da1ceae36fc7ee2744c4b3d5560', '1', 'app2', '我的app2', to_date('06-07-2020 14:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('06-07-2020 14:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'CeeVXLx9', 'http://127.0.0.1:8031', null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone)
-values ('nyslDupw', '7e4a6525b683a380d593593c3aa2c3a6', '1', '金达开222', '2222222', to_date('07-08-2020 13:55:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 13:55:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'lkx5ltJw', 'http://127.0.0.1:8030', null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone)
-values ('3JrekugM', 'ee389befb07ac8f568dd27e2318dc6e3', '1', '云雀研讨', '研讨服务', to_date('29-10-2020 08:54:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:54:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'lQ1JLazI', 'http://127.0.0.1:8089', null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone)
-values ('gyDuzG17', 'b3aed8f51f26f07c5dca9cb3405f6b7c', '1', 'app1', '测试', to_date('06-07-2020', 'dd-mm-yyyy'), null, null, null, to_date('06-07-2020', 'dd-mm-yyyy'), null, null, null, null, null, null, null, '67KpSREk', 'http://127.0.0.1:8030', null, null);
+insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
+values ('GCVgIa72', '99bcaa38946ac4e02518ad4337c22333', '1', '金达开3333', '2222222', to_date('26-02-2021 09:25:36', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('26-02-2021 09:25:36', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'RoCY84PY', 'http://127.0.0.1:8080', '张三丰', '131111111111', null);
+insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
+values ('KSKUIzZh', 'cc2163f31a465c76f193ad3b11ce557b', '1', '金达开223', '2222222', to_date('07-08-2020 14:05:43', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:05:43', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'nGk50Hmd', 'http://192.0.0.1:8080', null, null, null);
+insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
+values ('2mxFJBVc', '92604da1ceae36fc7ee2744c4b3d5560', '1', 'app2', '我的app2', to_date('06-07-2020 14:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('06-07-2020 14:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'CeeVXLx9', 'http://127.0.0.1:8031', null, null, null);
+insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
+values ('nyslDupw', '7e4a6525b683a380d593593c3aa2c3a6', '1', '金达开222', '2222222', to_date('07-08-2020 13:55:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 13:55:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'lkx5ltJw', 'http://127.0.0.1:8030', null, null, null);
+insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
+values ('3JrekugM', 'ee389befb07ac8f568dd27e2318dc6e3', '1', '云雀研讨', '研讨服务', to_date('29-10-2020 08:54:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:54:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'lQ1JLazI', 'http://127.0.0.1:8089', null, null, null);
+insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
+values ('gyDuzG17', 'b3aed8f51f26f07c5dca9cb3405f6b7c', '1', 'app1', '测试', to_date('06-07-2020', 'dd-mm-yyyy'), null, null, null, to_date('06-07-2020', 'dd-mm-yyyy'), null, null, null, null, null, null, null, '67KpSREk', 'http://127.0.0.1:8030', null, null, null);
 commit;
 prompt 6 records loaded
 prompt Loading API_APPLY...
+insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('SV8eCJP3', 'RoCY84PY', 'pYYfHP6e', '1', to_date('05-03-2021 16:45:26', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:45:26', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('aqtiOYiT', 'c7jNNCIx', '12H8pbxr', '1', to_date('19-03-2021 16:42:50', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('19-03-2021 16:42:50', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('kasn42le', 'nGk50Hmd', 'pYYfHP6e', '1', to_date('07-08-2020 14:07:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:07:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
@@ -278,10 +305,17 @@ values ('KLhHco8D', 'CeeVXLx9', '6KH8pbxr', '1', to_date('06-07-2020 14:25:28', 
 insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('8Vpnzean', 'lkx5ltJw', 's050Od67', '1', to_date('29-10-2020 09:05:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 09:05:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 commit;
-prompt 3 records loaded
+prompt 5 records loaded
 prompt Loading API_ROLE...
-prompt Table is empty
+insert into API_ROLE (id, name, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('1', 'ROLE_ADMIN', null, null, null, null, null, null, null, null, null, null, null, null);
+commit;
+prompt 1 records loaded
 prompt Loading API_SERVICE...
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
+values ('iD3Amulc', 'RoCY84PY', 'get', '/test/getTest1', '1', to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
+values ('GMlAnqhY', 'c7jNNCIx', 'get', ' /test/getTest1', '1', to_date('19-03-2021 16:31:25', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('19-03-2021 16:31:25', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
 insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
 values ('13H8pbxr', '67KpSREk', 'put', '/test/putTest2', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
 insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
@@ -305,14 +339,21 @@ values ('pYYfHP6e', 'lkx5ltJw', 'get', '/test/getTest1', '1', to_date('07-08-202
 insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
 values ('s050Od67', 'lQ1JLazI', 'post', '/backGroundMessage/notice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
 commit;
-prompt 11 records loaded
+prompt 13 records loaded
 prompt Loading API_USER...
 insert into API_USER (id, name, pwd, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, token)
+values ('nybDt7bs', 'admin', '$2a$10$xRjdXS7yRzggWYhmIHVi2uhdkK8eYQJ97ZDxpgSe2WduamAb6i4z2', to_date('04-03-2021 09:44:58', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('04-03-2021 15:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b20iLCJjcmVhdGVkIjoxNjE0ODQyNTA0MjY2LCJleHAiOjE2MTQ4NDQzMDR9.j3kwidH_XMNum1H75v4nZ8uEtxdDv_D8LLlRkFq-glmYuK0vQUkxxZZOdCHtYoD9iER9VItIetNehXxbOuLd_g');
+insert into API_USER (id, name, pwd, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, token)
 values ('nybDt7bT', 'tom', '$2a$10$xRjdXS7yRzggWYhmIHVi2uhdkK8eYQJ97ZDxpgSe2WduamAb6i4z2', to_date('04-03-2021 09:44:58', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('04-03-2021 15:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b20iLCJjcmVhdGVkIjoxNjE0ODQyNTA0MjY2LCJleHAiOjE2MTQ4NDQzMDR9.j3kwidH_XMNum1H75v4nZ8uEtxdDv_D8LLlRkFq-glmYuK0vQUkxxZZOdCHtYoD9iER9VItIetNehXxbOuLd_g');
+insert into API_USER (id, name, pwd, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, token)
+values ('2cfplkcX', 'jerry', '$2a$10$pfpgLlW7zoIm0gJcbRjITuOkKUBW7yiKrWG7qYA//J6DJcqeBJf1O', to_date('05-03-2021 16:10:48', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:10:48', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null);
+commit;
+prompt 3 records loaded
+prompt Loading API_USER_ROLE...
+insert into API_USER_ROLE (id, user_id, role_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('1', 'nybDt7bT', '1', null, null, null, null, null, null, null, null, null, null, null, null);
 commit;
 prompt 1 records loaded
-prompt Loading API_USER_ROLE...
-prompt Table is empty
 prompt Enabling triggers for API_APP...
 alter table API_APP enable all triggers;
 prompt Enabling triggers for API_APPLY...

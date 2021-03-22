@@ -13,7 +13,9 @@ import com.github.hollykunge.openapi.vo.auth.TokenParamVo;
 import com.github.hollykunge.openapi.vo.auth.TokenResVo;
 import com.github.hollykunge.openapi.vo.base.ResVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -44,6 +46,9 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
     private ServiceBiz serviceBiz;
     @Autowired
     private ApplyBiz applyBiz;
+    @Lazy
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     /**
      * 注册app
      * @param app
@@ -53,7 +58,7 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         RegisterResVo registerResVo = new RegisterResVo();
         registerResVo.setCode(ConfigConstants.RES_SUCCESS);
         registerResVo.setMsg(ConfigConstants.RES_SUCCESS_MSG);
-        if(app == null || app.getName() == null || "".equals(app.getName())  || app.getMainUrl() == null || "".equals(app.getMainUrl())){
+        if(app == null || app.getName() == null || "".equals(app.getName())  || app.getMainUrl() == null || "".equals(app.getMainUrl()) || "".equals(app.getPwd())){
             registerResVo.setCode(ConfigConstants.RES_ERROR_REGISTER_APP_NULL);
             registerResVo.setMsg(ConfigConstants.RES_ERROR_REGISTER_APP_NULL_MSG);
             return registerResVo;
@@ -87,6 +92,9 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         registerResVo.setAppSecret(appSecret);
         app.setAppId(appId);
         app.setSecret(appSecret);
+        //登录密码
+        app.setPwd(passwordEncoder.encode(app.getPwd()));
+
         appBiz.insertSelective(app);
         return registerResVo;
     }

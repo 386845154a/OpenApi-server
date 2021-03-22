@@ -51,32 +51,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.httpBasic()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/test/**").permitAll()
-                .antMatchers("/openApi/**").permitAll()
-                .antMatchers("/userAuth/**").permitAll()
-                //.antMatchers("/auth/getToken").permitAll()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/apply/**").permitAll()
-                .antMatchers("/service/**").permitAll()
-                .antMatchers("/app/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                /* .formLogin()
-                     //登录跳转页面
-                     .loginPage("/auth/login.html")
-                     //.usernameParameter("username").passwordParameter("password")  //username和password对应前端表单的name键
-                      //指定自定义form表单请求的路径
-                     .loginProcessingUrl("/auth/login")
-                     .successHandler(myAuthenticationSuccessHandler)
-                     .failureHandler(myAuthenticationFailureHandler)
-                     .permitAll()
-                     .and()*/
-                .logout()
-                //默认为/logout，不用改
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/auth/logout.html") //默认跳转到 /login
-                .deleteCookies("JSESSIONID");   //默认也是会删除cookie的
-    }
+            .and()
+        .authorizeRequests()
+                //测试接口，不需要拦截，开发测试使用
+            .antMatchers("/test/**").permitAll()
+                //后端服务调用其他服务接口，不需要拦截，由系统拦截器拦截，校验访问接口权限
+            .antMatchers("/openApi/**").permitAll()
+                //前端登录获取、刷新token不用拦截
+            .antMatchers("/userAuth/**").permitAll()
+                //第三方后端获取token不需要拦截，第三方携带appid、appSecret换取
+            .antMatchers("/auth/getToken").permitAll()
+                //注册应用（用户）不用拦截
+            .antMatchers("/auth/registerApp").permitAll()
+            //.antMatchers("/auth/**").permitAll()
+            //.antMatchers("/apply/**").permitAll()
+            //.antMatchers("/service/**").permitAll()
+            //.antMatchers("/app/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+       /* .formLogin()
+            //登录跳转页面
+            .loginPage("/auth/login.html")
+            //.usernameParameter("username").passwordParameter("password")  //username和password对应前端表单的name键
+             //指定自定义form表单请求的路径
+            .loginProcessingUrl("/auth/login")
+            .successHandler(myAuthenticationSuccessHandler)
+            .failureHandler(myAuthenticationFailureHandler)
+            .permitAll()
+            .and()*/
+        .logout()
+            //默认为/logout，不用改
+            .logoutUrl("/logout")  
+            .logoutSuccessUrl("/auth/logout.html") //默认跳转到 /login
+            .deleteCookies("JSESSIONID");   //默认也是会删除cookie的
+     }
 }

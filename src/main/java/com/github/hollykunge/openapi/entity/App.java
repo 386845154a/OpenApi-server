@@ -41,5 +41,8 @@ public class App  extends BaseEntity {
     @Column(name = "CONTACT_PHONE")
     @ApiModelProperty("联系人电话")
     private String contactPhone;
+    @Column(name = "PWD")
+    @ApiModelProperty("登录密码")
+    private String pwd;
 
 }

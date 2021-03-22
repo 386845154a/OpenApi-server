@@ -26,9 +26,10 @@ public class EntityUtils {
 	 * @param entity 实体bean 
 	 * @author dk
 	 */
-	public static <T> void setCreatAndUpdatInfo(T entity) {
-		setCreateInfo(entity);
+	public static <T> String setCreatAndUpdatInfo(T entity) {
+		String id = setCreateInfo(entity);
 		setUpdatedInfo(entity);
+		return id;
 	}
 	
 	/**
@@ -37,7 +38,7 @@ public class EntityUtils {
 	 * @param entity 实体bean
 	 * @author dk
 	 */
-	public static <T> void setCreateInfo(T entity){
+	public static <T> String setCreateInfo(T entity){
 		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 		String hostIp = "";
 		String name = "";
@@ -71,6 +72,7 @@ public class EntityUtils {
 		}
 		// 填充默认属性值
 		setDefaultValues(entity, fields, value);
+		return pkID;
 	}
 
 	/**

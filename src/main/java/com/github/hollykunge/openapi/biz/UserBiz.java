@@ -2,10 +2,10 @@ package com.github.hollykunge.openapi.biz;
 
 
 import com.github.hollykunge.openapi.biz.base.BaseBiz;
+import com.github.hollykunge.openapi.entity.App;
 import com.github.hollykunge.openapi.entity.User;
 import com.github.hollykunge.openapi.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +23,13 @@ public class UserBiz extends BaseBiz<UserMapper, User> {
     protected String getPageName() {
         return null;
     }
-    public User getUserByName(String name){
-          return userMapper.getUserByName(name);
+    public App getUserByName(String name){
+        return userMapper.getUserByName(name);
     }
-    public int addUser(User user){
+   /* public User getUserByName(String name){
+          return userMapper.getUserByName(name);
+    }*/
+    /*public int addUser(User user){
         int success = 1,exist = 0;
         User userExist = userMapper.getUserByName(user.getName());
         if(userExist!=null){
@@ -37,5 +40,5 @@ public class UserBiz extends BaseBiz<UserMapper, User> {
         user.setPwd(newPwd);
         this.insertSelective(user);
         return success;
-    }
+    }*/
 }

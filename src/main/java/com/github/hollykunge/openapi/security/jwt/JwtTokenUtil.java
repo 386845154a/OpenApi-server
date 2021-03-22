@@ -92,10 +92,7 @@ public class JwtTokenUtil {
         Claims claims = getClaimsFromToken(token);
         return claims.getExpiration();
     }
-    public  boolean isTokenSameUser(String tokenbody,String userName){
-        User user = userBiz.getUserByName(userName);
-        return user.getToken().equals(tokenbody);
-    }
+
 
     // 根据用户信息生成token
     public Map<String, String> generateToken(UserDetails userDetails) {
@@ -129,6 +126,9 @@ public class JwtTokenUtil {
     public List<GrantedAuthority> getRolesFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         List<HashMap> roles =  (List<HashMap>) claims.get(CLAIM_KEY_ROLES);
+        if(roles == null || roles.isEmpty()){
+            return null;
+        }
         List<GrantedAuthority> authority = roles.stream().map(i->new SimpleGrantedAuthority((String) i.get("authority"))).collect(Collectors.toList());
         return authority;
     }

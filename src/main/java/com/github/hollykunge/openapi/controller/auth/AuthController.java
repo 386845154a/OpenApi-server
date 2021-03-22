@@ -13,6 +13,8 @@ import com.github.hollykunge.openapi.vo.auth.TokenResVo;
 import com.github.hollykunge.openapi.vo.base.ResVo;
 import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
@@ -34,6 +36,7 @@ public class AuthController {
     JwtProperties jwtProperties;
     @Autowired
     RedisUtil redisUtil;
+
     /**
      * 注册应用
      * @param app 填写名称 描述 mainUrl

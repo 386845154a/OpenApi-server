@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("user")
 public class UserController extends BaseController<UserBiz, User> {
 
-    @RequestMapping(value = "/user", method = RequestMethod.POST)
+   /* @RequestMapping(value = "/user", method = RequestMethod.POST)
     @ResponseBody
     public ObjectRestResponse<ResVo> user(@RequestBody User user) {
 
@@ -30,5 +30,5 @@ public class UserController extends BaseController<UserBiz, User> {
             res.setMsg(ConfigConstants.RES_FAIL_MSG);
         }
         return new ObjectRestResponse<>().data(res).rel(true);
-    }
+    }*/
 }
