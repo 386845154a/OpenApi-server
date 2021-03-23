@@ -7,6 +7,7 @@ import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.config.UUIDUtils;
 import com.github.hollykunge.openapi.entity.App;
 import com.github.hollykunge.openapi.entity.Apply;
+import com.github.hollykunge.openapi.entity.Token;
 import com.github.hollykunge.openapi.mapper.AuthMapper;
 import com.github.hollykunge.openapi.vo.auth.RegisterResVo;
 import com.github.hollykunge.openapi.vo.auth.TokenParamVo;
@@ -46,6 +47,8 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
     private ServiceBiz serviceBiz;
     @Autowired
     private ApplyBiz applyBiz;
+    @Autowired
+    private TokenBiz tokenBiz;
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -134,7 +137,7 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
      * @param appId
      * @return
      */
-    private ApiToken generateApiToken(String appId){
+    /*private ApiToken generateApiToken(String appId){
         //过期时间两个小时
         long expireTimeUnit = 2*3600L;
         long crtTime = System.currentTimeMillis();
@@ -147,6 +150,32 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         apiToken.setAccessToken(accessToken);
         //key是token
         redisTemplate.opsForValue().set(ConfigConstants.RESDIS_TOKEN_COLLECTION+accessToken,apiToken,expireTimeUnit,TimeUnit.SECONDS);
+        return apiToken;
+    }*/
+    private ApiToken generateApiToken(String appId){
+        //永不过期
+        long expireTimeUnit = 99999*3600L;
+        long crtTime = System.currentTimeMillis();
+        int randomLength = 40;
+        ApiToken apiToken = new ApiToken();
+        apiToken.setAppId(appId);
+        apiToken.setCrtTime(crtTime);
+        String accessToken = UUIDUtils.generateShortUuid()+getRandomString(randomLength);
+        apiToken.setAccessToken(accessToken);
+        //key是token
+        redisTemplate.opsForValue().set(ConfigConstants.RESDIS_TOKEN_COLLECTION+accessToken,apiToken,expireTimeUnit,TimeUnit.SECONDS);
+        Token token = new Token();
+        token.setAppId(appId);
+        List<Token> list = tokenBiz.selectList(token);
+        if(list.isEmpty()){
+            token.setToken(accessToken);
+            tokenBiz.insertSelective(token);
+        }else {
+            token.setId(list.get(0).getId());
+            token.setToken(accessToken);
+            tokenBiz.updateSelectiveById(token);
+        }
+
         return apiToken;
     }
     private void validInf(TokenParamVo appVo,TokenResVo tokenResVo){

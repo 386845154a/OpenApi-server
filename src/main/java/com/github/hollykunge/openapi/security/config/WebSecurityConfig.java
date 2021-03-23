@@ -63,7 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/auth/getToken").permitAll()
                 //注册应用（用户）不用拦截
             .antMatchers("/auth/registerApp").permitAll()
-            //.antMatchers("/auth/**").permitAll()
+                .antMatchers("/notice/**").permitAll()
+                //.antMatchers("/auth/**").permitAll()
             //.antMatchers("/apply/**").permitAll()
             //.antMatchers("/service/**").permitAll()
             //.antMatchers("/app/**").permitAll()

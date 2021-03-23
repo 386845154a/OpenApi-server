@@ -5,8 +5,11 @@ import com.github.hollykunge.openapi.auth.ApiToken;
 import com.github.hollykunge.openapi.biz.AppBiz;
 import com.github.hollykunge.openapi.biz.ApplyBiz;
 import com.github.hollykunge.openapi.biz.ServiceBiz;
+import com.github.hollykunge.openapi.biz.TokenBiz;
 import com.github.hollykunge.openapi.config.CommonUtil;
 import com.github.hollykunge.openapi.config.ConfigConstants;
+import com.github.hollykunge.openapi.config.UUIDUtils;
+import com.github.hollykunge.openapi.entity.Token;
 import com.github.hollykunge.openapi.vo.auth.TokenResVo;
 import com.github.hollykunge.openapi.vo.param.OpenApiRequestParamVo;
 import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
@@ -22,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: zhuqz
@@ -39,6 +44,8 @@ public class OpenApiTokenInterceptor  implements HandlerInterceptor {
     private ApplyBiz applyBiz;
     @Autowired
     private ServiceBiz serviceBiz;
+    @Autowired
+    private TokenBiz tokenBiz;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //校验token是否存在
@@ -54,11 +61,32 @@ public class OpenApiTokenInterceptor  implements HandlerInterceptor {
         //校验token是否过期
         ApiToken apiToken = (ApiToken)redisTemplate.opsForValue().get(ConfigConstants.RESDIS_TOKEN_COLLECTION+accessToken);
         if(apiToken == null){
-            tokenResVo = new TokenResVo();
+            //查询数据库，把token再放入redis里
+            Token token = new Token();
+            token.setToken(accessToken);
+            List<Token> list = this.tokenBiz.selectList(token);
+            if(list.isEmpty()){
+                tokenResVo = new TokenResVo();
+                tokenResVo.setCode(ConfigConstants.RES_ERROR_TOKEN_EXPIRE);
+                tokenResVo.setMsg(ConfigConstants.RES_ERROR_TOKEN_EXPIRE_MSG);
+                writeResponseBackInf(response,tokenResVo);
+                return false;
+            }else {
+                //永不过期
+                long expireTimeUnit = 99999*3600L;
+                long crtTime = System.currentTimeMillis();
+                ApiToken apiTokenNew = new ApiToken();
+                apiTokenNew.setAppId(list.get(0).getAppId());
+                apiTokenNew.setCrtTime(crtTime);
+                apiTokenNew.setAccessToken(accessToken);
+                //key是token
+                redisTemplate.opsForValue().set(ConfigConstants.RESDIS_TOKEN_COLLECTION+accessToken,apiTokenNew,expireTimeUnit, TimeUnit.SECONDS);
+            }
+            /*tokenResVo = new TokenResVo();
             tokenResVo.setCode(ConfigConstants.RES_ERROR_TOKEN_EXPIRE);
             tokenResVo.setMsg(ConfigConstants.RES_ERROR_TOKEN_EXPIRE_MSG);
             writeResponseBackInf(response,tokenResVo);
-            return false;
+            return false;*/
         }
         //设置线程变量appId
         RequestThreadLocal.setApp(apiToken.getAppId());
