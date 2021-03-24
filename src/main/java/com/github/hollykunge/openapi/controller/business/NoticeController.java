@@ -33,11 +33,14 @@ public class NoticeController   extends BaseController<NoticeBiz, NoticeHeader> 
      * 发送通知
      */
     public ObjectRestResponse<ResVo> sendNotice(@RequestBody NoticeVo noticeVo) {
-
-        int resStr = this.noticeBiz.saveNotice(noticeVo);
         ResVo res = new ResVo();
-        res.setCode(ConfigConstants.RES_SUCCESS);
-        res.setMsg("");
+        int noType = 2;
+        int resInt = this.noticeBiz.saveNotice(noticeVo);
+        if(resInt == noType){
+            res.setMsg("类型不存在");
+            res.setCode(ConfigConstants.RES_ERROR_SYSTEM);
+            return new ObjectRestResponse<>().data(res).rel(false);
+        }
 
         return new ObjectRestResponse<>().data(res).rel(true);
     }

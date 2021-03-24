@@ -3,17 +3,20 @@ package com.github.hollykunge.openapi.biz;
 import cn.hutool.core.date.DateUtil;
 import com.github.hollykunge.openapi.auth.ApiToken;
 import com.github.hollykunge.openapi.biz.base.BaseBiz;
+import com.github.hollykunge.openapi.config.CommonUtil;
 import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.config.UUIDUtils;
 import com.github.hollykunge.openapi.entity.App;
 import com.github.hollykunge.openapi.entity.Apply;
 import com.github.hollykunge.openapi.entity.Token;
 import com.github.hollykunge.openapi.mapper.AuthMapper;
+import com.github.hollykunge.openapi.service.impl.ApiServiceImpl;
 import com.github.hollykunge.openapi.vo.auth.RegisterResVo;
 import com.github.hollykunge.openapi.vo.auth.TokenParamVo;
 import com.github.hollykunge.openapi.vo.auth.TokenResVo;
 import com.github.hollykunge.openapi.vo.base.ResVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +55,9 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
+    //自己的appId
+    @Value("${selfAppId}")
+    private String selfAppId;
     /**
      * 注册app
      * @param app
@@ -266,6 +272,17 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         }
         service.setRequestType(service.getRequestType().toLowerCase());
         serviceBiz.insertSelective(service);
+        //如果是注册自身服务的接口，把自己加入到可申请的列表里
+        if(CommonUtil.no2EmptyStr(selfAppId).equals(service.getAppId())){
+           Apply apply = new Apply();
+           apply.setStatus("1");
+           apply.setAppId(selfAppId);
+           apply.setServiceId(service.getId());
+           applyBiz.insertSelective(apply);
+           //放入缓存列表
+           ApiServiceImpl.addSelfServiceId(service.getId());
+        }
+
         return registerResVo;
     }
 

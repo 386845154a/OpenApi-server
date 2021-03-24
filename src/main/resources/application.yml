@@ -75,3 +75,5 @@ jwt:
   access-expiration: 3600
   roles-expiration: 300
   refresh-expiration: 604800
+#自己注册的app 的 appId字段
+selfAppId: roKiiAXn

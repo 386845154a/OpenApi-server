@@ -15,4 +15,16 @@ public class BusinessConstants {
     public final static int NOTICE_TYPE_UPDATE = 803;
      //推荐
     public final static int NOTICE_TYPE_RECOMMEND = 804;
+
+    //未读
+    public final static int NOTICE_READ_NO = 0;
+    //已读
+    public final static int NOTICE_READ_YES = 1;
+    //已同意
+    public final static int NOTICE_READ_APPROVED = 2;
+    //已驳回
+    public final static int NOTICE_READ_NEGTIVE = 3;
+    //已阅
+    public final static int NOTICE_READ_VIEWED = 4;
+
 }

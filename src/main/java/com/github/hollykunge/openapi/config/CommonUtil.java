@@ -1,5 +1,7 @@
 package com.github.hollykunge.openapi.config;
 
+import cn.hutool.Hutool;
+import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,6 +77,17 @@ public class CommonUtil {
             XFor = request.getRemoteAddr();
         }
         return XFor;
+    }
+
+    public static String getServerTime(){
+        return DateUtil.now();
+    }
+
+    public static String no2EmptyStr(Object obj){
+        if(obj == null){
+            return "";
+        }
+        return obj.toString();
     }
 
 }

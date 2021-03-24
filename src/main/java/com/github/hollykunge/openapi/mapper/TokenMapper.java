@@ -1,6 +1,7 @@
 package com.github.hollykunge.openapi.mapper;
 
 import com.github.hollykunge.openapi.entity.Token;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
 /**
@@ -9,4 +10,5 @@ import tk.mybatis.mapper.common.Mapper;
  * @description:
  */
 public interface TokenMapper  extends Mapper<Token> {
+    String getSelfToken(@Param("appId") String appId);
 }

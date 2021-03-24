@@ -1,10 +1,10 @@
 package com.github.hollykunge.openapi.service.impl;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.github.hollykunge.openapi.biz.AppBiz;
 import com.github.hollykunge.openapi.biz.ApplyBiz;
 import com.github.hollykunge.openapi.biz.ServiceBiz;
+import com.github.hollykunge.openapi.biz.TokenBiz;
 import com.github.hollykunge.openapi.config.CommonUtil;
 import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.entity.App;
@@ -16,12 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +42,40 @@ public class ApiServiceImpl implements ApiService {
     AppBiz appBiz;
     @Autowired
     ApplyBiz applyBiz;
+    @Autowired
+    TokenBiz tokenBiz;
 
     @Autowired
     @Qualifier("restTemplate")
     RestTemplate restTemplate;
+
+    @Value("${selfAppId}")
+    private String selfAppId;
+     //自身app的token
+    private  volatile static String appSelfToken;
+    //自身包含的服务列表
+    private  volatile static List<String> appSelfServiceIds;
+
+    public  static void addSelfServiceId(String serviceId){
+        appSelfServiceIds.add(serviceId);
+    }
+
+    @PostConstruct
+    public void initSelfApp(){
+        appSelfToken = tokenBiz.getSelfToken(selfAppId);
+        if(CommonUtil.no2EmptyStr(appSelfToken).equals("")){
+            logger.warn("api 工程初始化错误，没有自身app数据，请注册自身为一个app服务,并申请token，或者导入入初始化脚本！");
+            return;
+        }
+        appSelfServiceIds = this.serviceBiz.getSelfAppServices(selfAppId);
+
+        if(appSelfServiceIds.isEmpty()){
+            logger.warn("api 工程初始化错误，没有自身注册服务数据");
+            return;
+        }
+
+    }
+
     @Override
 //    @HystrixCommand(fallbackMethod="requestApiFallBack")
     /**
@@ -94,6 +126,11 @@ public class ApiServiceImpl implements ApiService {
                 // 请求头
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
+                //如果是自身服务接口
+                if(appSelfServiceIds.contains(paramVo.getServiceId())){
+                    headers.set(ConfigConstants.API_TOKEN_HEADER,appSelfToken);
+                }
+
                 // 发送请求
                 HttpEntity entity = new HttpEntity<>(requestBody,headers);
                 // put请求
@@ -145,7 +182,7 @@ public class ApiServiceImpl implements ApiService {
 
             try {
                 if(resMsg!=null && !"".equals(resMsg)){
-                    JSONObject json = JSONUtil.parseObj(resMsg);
+                    JSONObject json = JSONObject.parseObject(resMsg);
                     res.setRes(json);
                 }
             } catch (Exception e) {
