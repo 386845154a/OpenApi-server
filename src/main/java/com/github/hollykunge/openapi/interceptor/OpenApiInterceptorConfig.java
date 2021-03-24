@@ -17,9 +17,13 @@ public class OpenApiInterceptorConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-        String tokenInterceptorPath = "/openApi/service";
+        //第三方调用接口需要token
+        String tokenInterceptorPathForService = "/openApi/service";
+        //自己调用发送通知需要token
+        String tokenInterceptorPathForBusinessNotice = "/notice/sendNotice";
         registry.addInterceptor(openApiTokenInterceptor)
-                .addPathPatterns(tokenInterceptorPath)
+                .addPathPatterns(tokenInterceptorPathForService)
+                .addPathPatterns(tokenInterceptorPathForBusinessNotice)
                 .excludePathPatterns("swagger-ui.html")
                 .excludePathPatterns("/v2/api-docs/**")
                 .excludePathPatterns("/v2/api-docs-ext/**")

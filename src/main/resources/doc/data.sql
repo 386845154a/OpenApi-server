@@ -1,11 +1,12 @@
 ???prompt PL/SQL Developer import file
-prompt Created on 2021年3月19日 by Administrator
+prompt Created on 2021年3月24日 by Administrator
 set feedback off
 set define off
 prompt Creating API_APP...
 create table API_APP
 (
   id            VARCHAR2(50) not null,
+  appid         VARCHAR2(100) not null,
   secret        VARCHAR2(300) not null,
   status        VARCHAR2(2) default 1 not null,
   name          VARCHAR2(300) not null,
@@ -22,7 +23,6 @@ create table API_APP
   attr2         VARCHAR2(255),
   attr3         VARCHAR2(255),
   attr4         VARCHAR2(255),
-  appid         VARCHAR2(100),
   main_url      VARCHAR2(300),
   contact_name  VARCHAR2(100),
   contact_phone VARCHAR2(40),
@@ -43,6 +43,8 @@ comment on table API_APP
   is '应用注册表';
 comment on column API_APP.id
   is 'appid';
+comment on column API_APP.appid
+  is '应用id';
 comment on column API_APP.secret
   is 'app秘钥';
 comment on column API_APP.status
@@ -51,8 +53,6 @@ comment on column API_APP.name
   is '名称 登录前端使用它';
 comment on column API_APP.description
   is '描述';
-comment on column API_APP.appid
-  is '应用id';
 comment on column API_APP.main_url
   is '主要URL一直到端口：如http://127.0.0.1:8080';
 comment on column API_APP.contact_name
@@ -199,6 +199,57 @@ comment on column API_SERVICE.black_ip
 comment on column API_SERVICE.white_ip
   is '白名单';
 
+prompt Creating API_TOKEN...
+create table API_TOKEN
+(
+  id       VARCHAR2(64) not null,
+  app_id   VARCHAR2(64),
+  token    VARCHAR2(512),
+  crt_time DATE,
+  crt_user VARCHAR2(255),
+  crt_name VARCHAR2(255),
+  crt_host VARCHAR2(255),
+  upd_time DATE,
+  upd_user VARCHAR2(255),
+  upd_name VARCHAR2(255),
+  upd_host VARCHAR2(255),
+  attr1    VARCHAR2(255),
+  attr2    VARCHAR2(255),
+  attr3    VARCHAR2(255),
+  attr4    VARCHAR2(255)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table API_TOKEN
+  is 'token保存';
+comment on column API_TOKEN.app_id
+  is 'appid';
+comment on column API_TOKEN.token
+  is 'token';
+alter table API_TOKEN
+  add constraint TOKENPRIMARY primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
 prompt Creating API_USER...
 create table API_USER
 (
@@ -266,6 +317,330 @@ tablespace WORKHUB
 comment on table API_USER_ROLE
   is '该表暂时废弃';
 
+prompt Creating BUSINESS_NOTICE_BODY_OPERATE...
+create table BUSINESS_NOTICE_BODY_OPERATE
+(
+  id          VARCHAR2(64) not null,
+  detail_url  VARCHAR2(600),
+  type        VARCHAR2(8),
+  content_abs VARCHAR2(600),
+  call_back   VARCHAR2(600),
+  msg         VARCHAR2(600),
+  img_url     VARCHAR2(600),
+  bz          VARCHAR2(600),
+  crt_time    DATE,
+  crt_user    VARCHAR2(255),
+  crt_name    VARCHAR2(255),
+  crt_host    VARCHAR2(255),
+  upd_time    DATE,
+  upd_user    VARCHAR2(255),
+  upd_name    VARCHAR2(255),
+  upd_host    VARCHAR2(255),
+  attr1       VARCHAR2(255),
+  attr2       VARCHAR2(255),
+  attr3       VARCHAR2(255),
+  attr4       VARCHAR2(255),
+  business_id VARCHAR2(64)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table BUSINESS_NOTICE_BODY_OPERATE
+  is '协议内容-操作';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.id
+  is '主键';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.detail_url
+  is '业务详情';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.type
+  is '类型';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.content_abs
+  is '事件描述（摘要）';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.call_back
+  is '同意、驳回接口，回调地址，参数固定';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.msg
+  is '理由回填（同意、驳回）';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.img_url
+  is '图片地址';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.bz
+  is '备注';
+comment on column BUSINESS_NOTICE_BODY_OPERATE.business_id
+  is '业务单号，应用内唯一，云雀不使用查看审批详情使用';
+alter table BUSINESS_NOTICE_BODY_OPERATE
+  add constraint OPERATEPRIMARY primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating BUSINESS_NOTICE_BODY_RECOMMEND...
+create table BUSINESS_NOTICE_BODY_RECOMMEND
+(
+  id        VARCHAR2(64) not null,
+  url       VARCHAR2(600),
+  titile    VARCHAR2(450),
+  time      DATE,
+  source    VARCHAR2(600),
+  author    VARCHAR2(300),
+  domain    VARCHAR2(450),
+  rsource   VARCHAR2(600),
+  relevancy NUMBER,
+  bz        VARCHAR2(600),
+  crt_time  DATE,
+  crt_user  VARCHAR2(255),
+  crt_name  VARCHAR2(255),
+  crt_host  VARCHAR2(255),
+  upd_time  DATE,
+  upd_user  VARCHAR2(255),
+  upd_name  VARCHAR2(255),
+  upd_host  VARCHAR2(255),
+  attr1     VARCHAR2(255),
+  attr2     VARCHAR2(255),
+  attr3     VARCHAR2(255),
+  attr4     VARCHAR2(255)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+comment on table BUSINESS_NOTICE_BODY_RECOMMEND
+  is '协议内容-推荐';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.id
+  is '主键';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.url
+  is '链接地址';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.titile
+  is '内容标题';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.time
+  is '内容产生时间';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.source
+  is '内容来源地';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.author
+  is '作者';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.domain
+  is '领域';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.rsource
+  is '推荐源（根据什么推荐）';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.relevancy
+  is '相关度';
+comment on column BUSINESS_NOTICE_BODY_RECOMMEND.bz
+  is '备注';
+alter table BUSINESS_NOTICE_BODY_RECOMMEND
+  add constraint RECOMMEDPRIMAY primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+
+prompt Creating BUSINESS_NOTICE_BODY_SHOW...
+create table BUSINESS_NOTICE_BODY_SHOW
+(
+  id             VARCHAR2(64) not null,
+  detail_url     VARCHAR2(600),
+  type           VARCHAR2(8),
+  content_abs    VARCHAR2(600),
+  content_detail VARCHAR2(600),
+  img_url        VARCHAR2(600),
+  bz             VARCHAR2(600),
+  crt_time       DATE,
+  crt_user       VARCHAR2(255),
+  crt_name       VARCHAR2(255),
+  crt_host       VARCHAR2(255),
+  upd_time       DATE,
+  upd_user       VARCHAR2(255),
+  upd_name       VARCHAR2(255),
+  upd_host       VARCHAR2(255),
+  attr1          VARCHAR2(255),
+  attr2          VARCHAR2(255),
+  attr3          VARCHAR2(255),
+  attr4          VARCHAR2(255)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+comment on table BUSINESS_NOTICE_BODY_SHOW
+  is '协议内容-消息展示';
+comment on column BUSINESS_NOTICE_BODY_SHOW.id
+  is '主键';
+comment on column BUSINESS_NOTICE_BODY_SHOW.detail_url
+  is '查看详情地址';
+comment on column BUSINESS_NOTICE_BODY_SHOW.type
+  is '类型';
+comment on column BUSINESS_NOTICE_BODY_SHOW.content_abs
+  is '事件描述（摘要）';
+comment on column BUSINESS_NOTICE_BODY_SHOW.content_detail
+  is '事件详情（可扩展采用 key：value json格式）';
+comment on column BUSINESS_NOTICE_BODY_SHOW.img_url
+  is '图片url';
+comment on column BUSINESS_NOTICE_BODY_SHOW.bz
+  is '备注';
+alter table BUSINESS_NOTICE_BODY_SHOW
+  add constraint SHOWPRIMARY primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+
+prompt Creating BUSINESS_NOTICE_BODY_UPDATE...
+create table BUSINESS_NOTICE_BODY_UPDATE
+(
+  id           VARCHAR2(64) not null,
+  project_name VARCHAR2(450),
+  project_id   VARCHAR2(300),
+  post_data    VARCHAR2(900),
+  change_data  VARCHAR2(900),
+  version      VARCHAR2(300),
+  correlation  NUMBER,
+  bz           VARCHAR2(600),
+  crt_time     DATE,
+  crt_user     VARCHAR2(255),
+  crt_name     VARCHAR2(255),
+  crt_host     VARCHAR2(255),
+  upd_time     DATE,
+  upd_user     VARCHAR2(255),
+  upd_name     VARCHAR2(255),
+  upd_host     VARCHAR2(255),
+  attr1        VARCHAR2(255),
+  attr2        VARCHAR2(255),
+  attr3        VARCHAR2(255),
+  attr4        VARCHAR2(255),
+  business_id  VARCHAR2(64)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+comment on table BUSINESS_NOTICE_BODY_UPDATE
+  is '协议内容-数据更新';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.id
+  is '主键';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.project_name
+  is '项目名称';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.project_id
+  is '项目id（回调查看项目相关信息使用）';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.post_data
+  is '原始数据';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.change_data
+  is '变更后数据';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.version
+  is '数据版本（最新）';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.correlation
+  is '关联性（强1、弱0关联）';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.bz
+  is '备注';
+comment on column BUSINESS_NOTICE_BODY_UPDATE.business_id
+  is '业务单号';
+alter table BUSINESS_NOTICE_BODY_UPDATE
+  add constraint UPDATEPRIMARY primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+
+prompt Creating BUSINESS_NOTICE_HEADER...
+create table BUSINESS_NOTICE_HEADER
+(
+  id              VARCHAR2(64) not null,
+  notice_read     NUMBER default 0,
+  sender_name     VARCHAR2(300),
+  receiver_id     VARCHAR2(64),
+  receiver_name   VARCHAR2(300),
+  sender_org_name VARCHAR2(300),
+  source_name     VARCHAR2(300),
+  source_ip       VARCHAR2(100),
+  sender_type     NUMBER,
+  time            DATE default sysdate,
+  status          NUMBER,
+  receipt         NUMBER,
+  notice_level    NUMBER,
+  bz              VARCHAR2(900),
+  detail_id       VARCHAR2(64),
+  crt_time        DATE,
+  crt_user        VARCHAR2(255),
+  crt_name        VARCHAR2(255),
+  crt_host        VARCHAR2(255),
+  upd_time        DATE,
+  upd_user        VARCHAR2(255),
+  upd_name        VARCHAR2(255),
+  upd_host        VARCHAR2(255),
+  attr1           VARCHAR2(255),
+  attr2           VARCHAR2(255),
+  attr3           VARCHAR2(255),
+  attr4           VARCHAR2(255)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column BUSINESS_NOTICE_HEADER.id
+  is '通知主键（研讨内部唯一id）';
+comment on column BUSINESS_NOTICE_HEADER.notice_read
+  is '是否已读 （默认0未读，1已读，2已同意，3已驳回，4已阅）';
+comment on column BUSINESS_NOTICE_HEADER.sender_name
+  is '通知人姓名';
+comment on column BUSINESS_NOTICE_HEADER.receiver_id
+  is '接收人';
+comment on column BUSINESS_NOTICE_HEADER.receiver_name
+  is '接收人姓名';
+comment on column BUSINESS_NOTICE_HEADER.source_name
+  is '通知来源（业务/应用名称）';
+comment on column BUSINESS_NOTICE_HEADER.source_ip
+  is '来源IP';
+comment on column BUSINESS_NOTICE_HEADER.sender_type
+  is '801：审批；802：系统消息；803：数据更新；804：推荐';
+comment on column BUSINESS_NOTICE_HEADER.time
+  is '通知发送时间';
+comment on column BUSINESS_NOTICE_HEADER.status
+  is '紧急状态（0重要、1非重要）';
+comment on column BUSINESS_NOTICE_HEADER.receipt
+  is '回执（研讨内部使用，标注消息已阅，取消强提醒）';
+comment on column BUSINESS_NOTICE_HEADER.notice_level
+  is '密级 1：非密，2秘密，3机密';
+comment on column BUSINESS_NOTICE_HEADER.bz
+  is '备注';
+comment on column BUSINESS_NOTICE_HEADER.detail_id
+  is '详细id';
+alter table BUSINESS_NOTICE_HEADER
+  add constraint UKEY primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
 prompt Disabling triggers for API_APP...
 alter table API_APP disable all triggers;
 prompt Disabling triggers for API_APPLY...
@@ -274,44 +649,44 @@ prompt Disabling triggers for API_ROLE...
 alter table API_ROLE disable all triggers;
 prompt Disabling triggers for API_SERVICE...
 alter table API_SERVICE disable all triggers;
+prompt Disabling triggers for API_TOKEN...
+alter table API_TOKEN disable all triggers;
 prompt Disabling triggers for API_USER...
 alter table API_USER disable all triggers;
 prompt Disabling triggers for API_USER_ROLE...
 alter table API_USER_ROLE disable all triggers;
+prompt Disabling triggers for BUSINESS_NOTICE_BODY_OPERATE...
+alter table BUSINESS_NOTICE_BODY_OPERATE disable all triggers;
+prompt Disabling triggers for BUSINESS_NOTICE_BODY_RECOMMEND...
+alter table BUSINESS_NOTICE_BODY_RECOMMEND disable all triggers;
+prompt Disabling triggers for BUSINESS_NOTICE_BODY_SHOW...
+alter table BUSINESS_NOTICE_BODY_SHOW disable all triggers;
+prompt Disabling triggers for BUSINESS_NOTICE_BODY_UPDATE...
+alter table BUSINESS_NOTICE_BODY_UPDATE disable all triggers;
+prompt Disabling triggers for BUSINESS_NOTICE_HEADER...
+alter table BUSINESS_NOTICE_HEADER disable all triggers;
 prompt Loading API_APP...
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
-values ('GCVgIa72', '99bcaa38946ac4e02518ad4337c22333', '1', '金达开3333', '2222222', to_date('26-02-2021 09:25:36', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('26-02-2021 09:25:36', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'RoCY84PY', 'http://127.0.0.1:8080', '张三丰', '131111111111', null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
-values ('KSKUIzZh', 'cc2163f31a465c76f193ad3b11ce557b', '1', '金达开223', '2222222', to_date('07-08-2020 14:05:43', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:05:43', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'nGk50Hmd', 'http://192.0.0.1:8080', null, null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
-values ('2mxFJBVc', '92604da1ceae36fc7ee2744c4b3d5560', '1', 'app2', '我的app2', to_date('06-07-2020 14:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('06-07-2020 14:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'CeeVXLx9', 'http://127.0.0.1:8031', null, null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
-values ('nyslDupw', '7e4a6525b683a380d593593c3aa2c3a6', '1', '金达开222', '2222222', to_date('07-08-2020 13:55:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 13:55:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'lkx5ltJw', 'http://127.0.0.1:8030', null, null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
-values ('3JrekugM', 'ee389befb07ac8f568dd27e2318dc6e3', '1', '云雀研讨', '研讨服务', to_date('29-10-2020 08:54:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:54:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'lQ1JLazI', 'http://127.0.0.1:8089', null, null, null);
-insert into API_APP (id, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, appid, main_url, contact_name, contact_phone, pwd)
-values ('gyDuzG17', 'b3aed8f51f26f07c5dca9cb3405f6b7c', '1', 'app1', '测试', to_date('06-07-2020', 'dd-mm-yyyy'), null, null, null, to_date('06-07-2020', 'dd-mm-yyyy'), null, null, null, null, null, null, null, '67KpSREk', 'http://127.0.0.1:8030', null, null, null);
+insert into API_APP (id, appid, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, main_url, contact_name, contact_phone, pwd)
+values ('oIV6HEYH', 'roKiiAXn', 'd5206eee30013aa65fa406ed9fe5bb24', '1', 'openApi', '2222222', to_date('23-03-2021 16:18:59', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:18:59', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'http://127.0.0.1:8030', '张三丰', '131111111111', '$2a$10$NiiU5x0zeFznqAKXphlRBeSM/PGafceyjQli4Qlqg3USXF697T7qK');
+insert into API_APP (id, appid, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, main_url, contact_name, contact_phone, pwd)
+values ('RSnLoDcV', 'Nztv3WuN', 'dfa2c86c4094f0d4f4507752d850f436', '1', 'thirdTest', '2222222', to_date('23-03-2021 16:24:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:24:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'http://127.0.0.1:9001', '张三丰', '13222222222222', '$2a$10$RPrXJB3zZPcPjgJKkzE1h.AisLN3KUyuu/fbbDfMq9uKUCje2jxJq');
 commit;
-prompt 6 records loaded
+prompt 2 records loaded
 prompt Loading API_APPLY...
 insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
-values ('SV8eCJP3', 'RoCY84PY', 'pYYfHP6e', '1', to_date('05-03-2021 16:45:26', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:45:26', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+values ('a050Od65', 'Nztv3WuN', 's050Od68', '1', null, null, null, null, null, null, null, null, null, null, null, null);
 insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
-values ('aqtiOYiT', 'c7jNNCIx', '12H8pbxr', '1', to_date('19-03-2021 16:42:50', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('19-03-2021 16:42:50', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
-insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
-values ('kasn42le', 'nGk50Hmd', 'pYYfHP6e', '1', to_date('07-08-2020 14:07:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:07:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
-insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
-values ('KLhHco8D', 'CeeVXLx9', '6KH8pbxr', '1', to_date('06-07-2020 14:25:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('06-07-2020 14:25:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
-insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
-values ('8Vpnzean', 'lkx5ltJw', 's050Od67', '1', to_date('29-10-2020 09:05:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 09:05:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+values ('KLhHco8s', 'roKiiAXn', 's050Od68', '1', to_date('29-10-2020 09:05:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, null);
 commit;
-prompt 5 records loaded
+prompt 2 records loaded
 prompt Loading API_ROLE...
 insert into API_ROLE (id, name, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('1', 'ROLE_ADMIN', null, null, null, null, null, null, null, null, null, null, null, null);
 commit;
 prompt 1 records loaded
 prompt Loading API_SERVICE...
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
+values ('s050Od68', 'roKiiAXn', 'post', '/OpenApi/notice/sendNotice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
 insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
 values ('iD3Amulc', 'RoCY84PY', 'get', '/test/getTest1', '1', to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
 insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
@@ -339,7 +714,14 @@ values ('pYYfHP6e', 'lkx5ltJw', 'get', '/test/getTest1', '1', to_date('07-08-202
 insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
 values ('s050Od67', 'lQ1JLazI', 'post', '/backGroundMessage/notice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
 commit;
-prompt 13 records loaded
+prompt 14 records loaded
+prompt Loading API_TOKEN...
+insert into API_TOKEN (id, app_id, token, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('xSBuDkNu', 'roKiiAXn', 'oeadmOczKMmUw2jnDoimdSZEWIAHqTxDwDkYiBy9uPscrLHx', to_date('23-03-2021 16:20:58', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:20:58', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into API_TOKEN (id, app_id, token, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('frKI8Tyi', 'Nztv3WuN', 'biER15KVD3TWKd0iFxtSXbvYNVbNjR1An9YAKYMYBw6aMYR0', to_date('23-03-2021 16:25:32', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:25:32', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+commit;
+prompt 2 records loaded
 prompt Loading API_USER...
 insert into API_USER (id, name, pwd, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, token)
 values ('nybDt7bs', 'admin', '$2a$10$xRjdXS7yRzggWYhmIHVi2uhdkK8eYQJ97ZDxpgSe2WduamAb6i4z2', to_date('04-03-2021 09:44:58', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('04-03-2021 15:21:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b20iLCJjcmVhdGVkIjoxNjE0ODQyNTA0MjY2LCJleHAiOjE2MTQ4NDQzMDR9.j3kwidH_XMNum1H75v4nZ8uEtxdDv_D8LLlRkFq-glmYuK0vQUkxxZZOdCHtYoD9iER9VItIetNehXxbOuLd_g');
@@ -354,6 +736,66 @@ insert into API_USER_ROLE (id, user_id, role_id, crt_time, crt_user, crt_name, c
 values ('1', 'nybDt7bT', '1', null, null, null, null, null, null, null, null, null, null, null, null);
 commit;
 prompt 1 records loaded
+prompt Loading BUSINESS_NOTICE_BODY_OPERATE...
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('BCyGZ84T', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('23-03-2021 10:05:55', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 10:05:55', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('MY2UgRSK', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('23-03-2021 15:05:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 15:05:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('QoMwp9hg', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('23-03-2021 15:09:29', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 15:09:29', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('E613bsod', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:11:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:11:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('49HZt3WJ', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:12:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:12:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('UbSHbuaV', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:15:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:15:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('rLDp9FJn', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:15:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:15:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('DDiFbGRx', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:37:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:37:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('dsZgSWwh', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:42:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('dfCyNuuZ', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:42:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('a0kgDac9', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+insert into BUSINESS_NOTICE_BODY_OPERATE (id, detail_url, type, content_abs, call_back, msg, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('a6x8J0xg', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可以', 'www.tupian.com', '紧急审批', to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+commit;
+prompt 12 records loaded
+prompt Loading BUSINESS_NOTICE_BODY_RECOMMEND...
+prompt Table is empty
+prompt Loading BUSINESS_NOTICE_BODY_SHOW...
+prompt Table is empty
+prompt Loading BUSINESS_NOTICE_BODY_UPDATE...
+prompt Table is empty
+prompt Loading BUSINESS_NOTICE_HEADER...
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('mIvOWApp', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, null, 0, null, 1, '备注说明', 'BCyGZ84T', to_date('23-03-2021 10:06:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 10:06:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('ispAFtN7', 0, '发送人', 'yanzhenqing', '接收人', '二院', 'app', null, 801, to_date('23-03-2021 15:05:17', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'MY2UgRSK', to_date('23-03-2021 15:05:17', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 15:05:17', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('raq8JhaS', 0, '发送人', 'yanzhenqing', '接收人', '二院', 'app', null, 801, to_date('23-03-2021 15:09:29', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'QoMwp9hg', to_date('23-03-2021 15:09:29', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 15:09:29', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('06wDCCxo', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:11:02', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'E613bsod', to_date('24-03-2021 09:11:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:11:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('1lkE66DG', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:12:08', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', '49HZt3WJ', to_date('24-03-2021 09:12:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:12:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('8v1gGyUf', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:15:28', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'UbSHbuaV', to_date('24-03-2021 09:15:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:15:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('OW0qceqz', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:15:40', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'rLDp9FJn', to_date('24-03-2021 09:15:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:15:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('AqfZzbJg', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:37:08', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'DDiFbGRx', to_date('24-03-2021 09:37:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:37:08', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('o6ywY5Lr', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:42:01', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'dsZgSWwh', to_date('24-03-2021 09:42:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('MmUr2qM8', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:42:14', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'dfCyNuuZ', to_date('24-03-2021 09:42:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:14', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('6zJZ4V7C', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'a0kgDac9', to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('9zF2rtHB', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'a6x8J0xg', to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+commit;
+prompt 12 records loaded
 prompt Enabling triggers for API_APP...
 alter table API_APP enable all triggers;
 prompt Enabling triggers for API_APPLY...
@@ -362,10 +804,22 @@ prompt Enabling triggers for API_ROLE...
 alter table API_ROLE enable all triggers;
 prompt Enabling triggers for API_SERVICE...
 alter table API_SERVICE enable all triggers;
+prompt Enabling triggers for API_TOKEN...
+alter table API_TOKEN enable all triggers;
 prompt Enabling triggers for API_USER...
 alter table API_USER enable all triggers;
 prompt Enabling triggers for API_USER_ROLE...
 alter table API_USER_ROLE enable all triggers;
+prompt Enabling triggers for BUSINESS_NOTICE_BODY_OPERATE...
+alter table BUSINESS_NOTICE_BODY_OPERATE enable all triggers;
+prompt Enabling triggers for BUSINESS_NOTICE_BODY_RECOMMEND...
+alter table BUSINESS_NOTICE_BODY_RECOMMEND enable all triggers;
+prompt Enabling triggers for BUSINESS_NOTICE_BODY_SHOW...
+alter table BUSINESS_NOTICE_BODY_SHOW enable all triggers;
+prompt Enabling triggers for BUSINESS_NOTICE_BODY_UPDATE...
+alter table BUSINESS_NOTICE_BODY_UPDATE enable all triggers;
+prompt Enabling triggers for BUSINESS_NOTICE_HEADER...
+alter table BUSINESS_NOTICE_HEADER enable all triggers;
 set feedback on
 set define on
 prompt Done.

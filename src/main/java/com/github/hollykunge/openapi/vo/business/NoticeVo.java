@@ -36,5 +36,5 @@ public class NoticeVo  implements Serializable {
     @ApiModelProperty("备注")
     private String bz            ;
     @ApiModelProperty("内容")
-    private NoticeBodyVo msgContent      ;
+    private Object msgContent      ;
 }

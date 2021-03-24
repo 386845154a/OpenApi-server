@@ -39,6 +39,18 @@ spring:
     password: 123456
     database: 7
     timeout: 5000ms
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: hollykunge
+    password: 123456
+    listener:
+      simple:
+        acknowledge-mode: manual
+        retry:
+          max-attempts: 3
+          initial-interval: 2000ms
+          enabled: true
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 ribbon:
@@ -63,3 +75,5 @@ jwt:
   access-expiration: 3600
   roles-expiration: 300
   refresh-expiration: 604800
+#自己注册的app 的 appId字段
+selfAppId: roKiiAXn

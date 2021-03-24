@@ -8,12 +8,15 @@ import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.config.UUIDUtils;
 import com.github.hollykunge.openapi.entity.App;
 import com.github.hollykunge.openapi.entity.Apply;
+import com.github.hollykunge.openapi.entity.Token;
 import com.github.hollykunge.openapi.mapper.AuthMapper;
+import com.github.hollykunge.openapi.service.impl.ApiServiceImpl;
 import com.github.hollykunge.openapi.vo.auth.RegisterResVo;
 import com.github.hollykunge.openapi.vo.auth.TokenParamVo;
 import com.github.hollykunge.openapi.vo.auth.TokenResVo;
 import com.github.hollykunge.openapi.vo.base.ResVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,9 +50,14 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
     private ServiceBiz serviceBiz;
     @Autowired
     private ApplyBiz applyBiz;
+    @Autowired
+    private TokenBiz tokenBiz;
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
+    //自己的appId
+    @Value("${selfAppId}")
+    private String selfAppId;
     /**
      * 注册app
      * @param app
@@ -135,7 +143,7 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
      * @param appId
      * @return
      */
-    private ApiToken generateApiToken(String appId){
+    /*private ApiToken generateApiToken(String appId){
         //过期时间两个小时
         long expireTimeUnit = 2*3600L;
         long crtTime = System.currentTimeMillis();
@@ -148,6 +156,32 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         apiToken.setAccessToken(accessToken);
         //key是token
         redisTemplate.opsForValue().set(ConfigConstants.RESDIS_TOKEN_COLLECTION+accessToken,apiToken,expireTimeUnit,TimeUnit.SECONDS);
+        return apiToken;
+    }*/
+    private ApiToken generateApiToken(String appId){
+        //永不过期
+        long expireTimeUnit = 99999*3600L;
+        long crtTime = System.currentTimeMillis();
+        int randomLength = 40;
+        ApiToken apiToken = new ApiToken();
+        apiToken.setAppId(appId);
+        apiToken.setCrtTime(crtTime);
+        String accessToken = UUIDUtils.generateShortUuid()+getRandomString(randomLength);
+        apiToken.setAccessToken(accessToken);
+        //key是token
+        redisTemplate.opsForValue().set(ConfigConstants.RESDIS_TOKEN_COLLECTION+accessToken,apiToken,expireTimeUnit,TimeUnit.SECONDS);
+        Token token = new Token();
+        token.setAppId(appId);
+        List<Token> list = tokenBiz.selectList(token);
+        if(list.isEmpty()){
+            token.setToken(accessToken);
+            tokenBiz.insertSelective(token);
+        }else {
+            token.setId(list.get(0).getId());
+            token.setToken(accessToken);
+            tokenBiz.updateSelectiveById(token);
+        }
+
         return apiToken;
     }
     private void validInf(TokenParamVo appVo,TokenResVo tokenResVo){
@@ -238,6 +272,17 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         }
         service.setRequestType(service.getRequestType().toLowerCase());
         serviceBiz.insertSelective(service);
+        //如果是注册自身服务的接口，把自己加入到可申请的列表里
+        if(CommonUtil.no2EmptyStr(selfAppId).equals(service.getAppId())){
+           Apply apply = new Apply();
+           apply.setStatus("1");
+           apply.setAppId(selfAppId);
+           apply.setServiceId(service.getId());
+           applyBiz.insertSelective(apply);
+           //放入缓存列表
+           ApiServiceImpl.addSelfServiceId(service.getId());
+        }
+
         return registerResVo;
     }
 

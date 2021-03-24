@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author: zhuqz
  * @date: 2021/3/18 16:14
@@ -31,11 +33,14 @@ public class NoticeController   extends BaseController<NoticeBiz, NoticeHeader> 
      * 发送通知
      */
     public ObjectRestResponse<ResVo> sendNotice(@RequestBody NoticeVo noticeVo) {
-
-        String resStr = this.noticeBiz.saveNotice(noticeVo);
         ResVo res = new ResVo();
-        res.setCode(ConfigConstants.RES_SUCCESS);
-        res.setMsg(resStr);
+        int noType = 2;
+        int resInt = this.noticeBiz.saveNotice(noticeVo);
+        if(resInt == noType){
+            res.setMsg("类型不存在");
+            res.setCode(ConfigConstants.RES_ERROR_SYSTEM);
+            return new ObjectRestResponse<>().data(res).rel(false);
+        }
 
         return new ObjectRestResponse<>().data(res).rel(true);
     }
