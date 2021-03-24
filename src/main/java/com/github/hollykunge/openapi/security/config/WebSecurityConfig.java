@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //后端服务调用其他服务接口，不需要拦截，由系统拦截器拦截，校验访问接口权限
             .antMatchers("/openApi/**").permitAll()
                 //前端登录获取、刷新token不用拦截
-            .antMatchers("/userAuth/**").permitAll()
+            .antMatchers("/appAuth/**").permitAll()
                 //第三方后端获取token不需要拦截，第三方携带appid、appSecret换取
             .antMatchers("/auth/getToken").permitAll()
                 //注册应用（用户）不用拦截

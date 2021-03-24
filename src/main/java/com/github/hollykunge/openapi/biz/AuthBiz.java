@@ -3,6 +3,7 @@ package com.github.hollykunge.openapi.biz;
 import cn.hutool.core.date.DateUtil;
 import com.github.hollykunge.openapi.auth.ApiToken;
 import com.github.hollykunge.openapi.biz.base.BaseBiz;
+import com.github.hollykunge.openapi.config.CommonUtil;
 import com.github.hollykunge.openapi.config.ConfigConstants;
 import com.github.hollykunge.openapi.config.UUIDUtils;
 import com.github.hollykunge.openapi.entity.App;
@@ -58,7 +59,7 @@ public class AuthBiz   extends BaseBiz<AuthMapper, App> {
         RegisterResVo registerResVo = new RegisterResVo();
         registerResVo.setCode(ConfigConstants.RES_SUCCESS);
         registerResVo.setMsg(ConfigConstants.RES_SUCCESS_MSG);
-        if(app == null || app.getName() == null || "".equals(app.getName())  || app.getMainUrl() == null || "".equals(app.getMainUrl()) || "".equals(app.getPwd())){
+        if (CommonUtil.isNullOrEmpty(app.getName(),app.getMainUrl(),app.getPwd(),app.getContactName(),app.getContactPhone())){
             registerResVo.setCode(ConfigConstants.RES_ERROR_REGISTER_APP_NULL);
             registerResVo.setMsg(ConfigConstants.RES_ERROR_REGISTER_APP_NULL_MSG);
             return registerResVo;

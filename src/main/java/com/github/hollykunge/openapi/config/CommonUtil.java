@@ -1,5 +1,8 @@
 package com.github.hollykunge.openapi.config;
 
+
+import org.apache.commons.lang.StringUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -34,5 +37,27 @@ public class CommonUtil {
             }
         }
         return sw.toString();
+    }
+
+    /**
+     *
+     * @param strings 验证非空变量
+     * @return 是否包含空参数
+     */
+    public static Boolean isNullOrEmpty(String ...strings){
+
+//        StringBuffer str = new StringBuffer();
+//        for (int i = 0; i < strings.length; i++) {
+//            if (StringUtils.isBlank(strings[i])){
+//                str.append(i).append("、");
+//            }
+//        }
+//        return str.toString();
+       for (int i = 0; i < strings.length; i++) {
+            if (StringUtils.isBlank(strings[i])){
+                return true;
+            }
+        }
+       return false;
     }
 }

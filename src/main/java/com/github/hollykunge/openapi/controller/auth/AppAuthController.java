@@ -33,8 +33,8 @@ import java.util.Map;
  * @description:
  */
 @RestController
-@RequestMapping("userAuth")
-public class UserAuthController {
+@RequestMapping("appAuth")
+public class AppAuthController {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
     @Autowired

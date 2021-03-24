@@ -11,4 +11,4 @@
 
 
 应用流程
-![Image text](https://https://github.com/386845154a/OpenApi-server/blob/main/src/main/resources/doc/img/1.png)
+![Image text](https://github.com/386845154a/OpenApi-server/blob/main/src/main/resources/doc/img/1.png)
