@@ -1,5 +1,5 @@
 ???prompt PL/SQL Developer import file
-prompt Created on 2021年3月24日 by Administrator
+prompt Created on 2021年3月25日 by Administrator
 set feedback off
 set define off
 prompt Creating API_APP...
@@ -417,7 +417,14 @@ create table BUSINESS_NOTICE_BODY_RECOMMEND
 tablespace WORKHUB
   pctfree 10
   initrans 1
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 comment on table BUSINESS_NOTICE_BODY_RECOMMEND
   is '协议内容-推荐';
 comment on column BUSINESS_NOTICE_BODY_RECOMMEND.id
@@ -446,7 +453,14 @@ alter table BUSINESS_NOTICE_BODY_RECOMMEND
   tablespace WORKHUB
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt Creating BUSINESS_NOTICE_BODY_SHOW...
 create table BUSINESS_NOTICE_BODY_SHOW
@@ -469,12 +483,20 @@ create table BUSINESS_NOTICE_BODY_SHOW
   attr1          VARCHAR2(255),
   attr2          VARCHAR2(255),
   attr3          VARCHAR2(255),
-  attr4          VARCHAR2(255)
+  attr4          VARCHAR2(255),
+  business_id    VARCHAR2(64)
 )
 tablespace WORKHUB
   pctfree 10
   initrans 1
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 comment on table BUSINESS_NOTICE_BODY_SHOW
   is '协议内容-消息展示';
 comment on column BUSINESS_NOTICE_BODY_SHOW.id
@@ -491,13 +513,22 @@ comment on column BUSINESS_NOTICE_BODY_SHOW.img_url
   is '图片url';
 comment on column BUSINESS_NOTICE_BODY_SHOW.bz
   is '备注';
+comment on column BUSINESS_NOTICE_BODY_SHOW.business_id
+  is '业务单号';
 alter table BUSINESS_NOTICE_BODY_SHOW
   add constraint SHOWPRIMARY primary key (ID)
   using index 
   tablespace WORKHUB
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt Creating BUSINESS_NOTICE_BODY_UPDATE...
 create table BUSINESS_NOTICE_BODY_UPDATE
@@ -521,13 +552,19 @@ create table BUSINESS_NOTICE_BODY_UPDATE
   attr1        VARCHAR2(255),
   attr2        VARCHAR2(255),
   attr3        VARCHAR2(255),
-  attr4        VARCHAR2(255),
-  business_id  VARCHAR2(64)
+  attr4        VARCHAR2(255)
 )
 tablespace WORKHUB
   pctfree 10
   initrans 1
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 comment on table BUSINESS_NOTICE_BODY_UPDATE
   is '协议内容-数据更新';
 comment on column BUSINESS_NOTICE_BODY_UPDATE.id
@@ -546,15 +583,20 @@ comment on column BUSINESS_NOTICE_BODY_UPDATE.correlation
   is '关联性（强1、弱0关联）';
 comment on column BUSINESS_NOTICE_BODY_UPDATE.bz
   is '备注';
-comment on column BUSINESS_NOTICE_BODY_UPDATE.business_id
-  is '业务单号';
 alter table BUSINESS_NOTICE_BODY_UPDATE
   add constraint UPDATEPRIMARY primary key (ID)
   using index 
   tablespace WORKHUB
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt Creating BUSINESS_NOTICE_HEADER...
 create table BUSINESS_NOTICE_HEADER
@@ -764,12 +806,27 @@ values ('a6x8J0xg', 'www.baidu.com', '1', '事件描述', 'www.back.com', '可�
 commit;
 prompt 12 records loaded
 prompt Loading BUSINESS_NOTICE_BODY_RECOMMEND...
-prompt Table is empty
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('sMWFz05K', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+commit;
+prompt 1 records loaded
 prompt Loading BUSINESS_NOTICE_BODY_SHOW...
-prompt Table is empty
+insert into BUSINESS_NOTICE_BODY_SHOW (id, detail_url, type, content_abs, content_detail, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
+values ('uPA9VRZl', 'www.baidu.com', '1', '事件描述', '商店大促销', 'www.tupian.com', '紧急审批', to_date('25-03-2021 15:13:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:13:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
+commit;
+prompt 1 records loaded
 prompt Loading BUSINESS_NOTICE_BODY_UPDATE...
-prompt Table is empty
+insert into BUSINESS_NOTICE_BODY_UPDATE (id, project_name, project_id, post_data, change_data, version, correlation, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('t0Zsf8Wa', '飞行项目', 'proId', '{id=id1, name=test}', '{id=id1, name=test2}', 'v1.1', 1, '最新数据', to_date('25-03-2021 15:21:26', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:21:26', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+commit;
+prompt 1 records loaded
 prompt Loading BUSINESS_NOTICE_HEADER...
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('RCtOjHN9', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 802, to_date('25-03-2021 15:13:13', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'uPA9VRZl', to_date('25-03-2021 15:13:13', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:13:13', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('NC4ph4iK', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 803, to_date('25-03-2021 15:21:28', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 't0Zsf8Wa', to_date('25-03-2021 15:21:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:21:28', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('UljmLAG7', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'sMWFz05K', to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('mIvOWApp', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, null, 0, null, 1, '备注说明', 'BCyGZ84T', to_date('23-03-2021 10:06:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 10:06:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
@@ -795,7 +852,7 @@ values ('6zJZ4V7C', 0, '发送人', '123456789', '接收人', '二院', 'app', n
 insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('9zF2rtHB', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'a6x8J0xg', to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 commit;
-prompt 12 records loaded
+prompt 15 records loaded
 prompt Enabling triggers for API_APP...
 alter table API_APP enable all triggers;
 prompt Enabling triggers for API_APPLY...

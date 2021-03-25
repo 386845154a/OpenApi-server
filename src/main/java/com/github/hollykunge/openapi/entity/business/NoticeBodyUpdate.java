@@ -16,9 +16,7 @@ import javax.persistence.Table;
 @ApiModel("通知消息体数据更新")
 @Table(name = "BUSINESS_NOTICE_BODY_UPDATE")
 public class NoticeBodyUpdate  extends  BaseEntity{
-    @Column(name = "BUSINESS_ID")
-    @ApiModelProperty("业务单号")
-    private String businessId  ;
+
     @Column(name = "PROJECT_NAME")
     @ApiModelProperty("项目名称")
     private String projectName ;

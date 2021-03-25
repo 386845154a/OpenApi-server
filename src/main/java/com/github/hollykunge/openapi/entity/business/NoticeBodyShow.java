@@ -17,6 +17,9 @@ import javax.persistence.Table;
 @ApiModel("通知消息体数据展示")
 @Table(name = "BUSINESS_NOTICE_BODY_SHOW")
 public class NoticeBodyShow  extends BaseEntity {
+    @Column(name = "BUSINESS_ID")
+    @ApiModelProperty("业务单号")
+    private String businessId  ;
     @Column(name = "DETAIL_URL")
     @ApiModelProperty("查看详情地址")
     String detailUrl     ;
