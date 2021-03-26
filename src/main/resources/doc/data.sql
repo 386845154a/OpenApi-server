@@ -1,5 +1,5 @@
 ???prompt PL/SQL Developer import file
-prompt Created on 2021年3月25日 by Administrator
+prompt Created on 2021年3月26日 by Administrator
 set feedback off
 set define off
 prompt Creating API_APP...
@@ -26,7 +26,8 @@ create table API_APP
   main_url      VARCHAR2(300),
   contact_name  VARCHAR2(100),
   contact_phone VARCHAR2(40),
-  pwd           VARCHAR2(300)
+  pwd           VARCHAR2(300),
+  code          VARCHAR2(300)
 )
 tablespace WORKHUB
   pctfree 10
@@ -50,7 +51,7 @@ comment on column API_APP.secret
 comment on column API_APP.status
   is '状态1有效0无效';
 comment on column API_APP.name
-  is '名称 登录前端使用它';
+  is '名称';
 comment on column API_APP.description
   is '描述';
 comment on column API_APP.main_url
@@ -61,6 +62,8 @@ comment on column API_APP.contact_phone
   is '联系人电话';
 comment on column API_APP.pwd
   is '前端登录使用它md5加密';
+comment on column API_APP.code
+  is '身份证前端登录使用';
 create unique index UNIQUE_ID on API_APP (ID)
   tablespace WORKHUB
   pctfree 10
@@ -708,10 +711,10 @@ alter table BUSINESS_NOTICE_BODY_UPDATE disable all triggers;
 prompt Disabling triggers for BUSINESS_NOTICE_HEADER...
 alter table BUSINESS_NOTICE_HEADER disable all triggers;
 prompt Loading API_APP...
-insert into API_APP (id, appid, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, main_url, contact_name, contact_phone, pwd)
-values ('oIV6HEYH', 'roKiiAXn', 'd5206eee30013aa65fa406ed9fe5bb24', '1', 'openApi', '2222222', to_date('23-03-2021 16:18:59', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:18:59', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'http://127.0.0.1:8030', '张三丰', '131111111111', '$2a$10$NiiU5x0zeFznqAKXphlRBeSM/PGafceyjQli4Qlqg3USXF697T7qK');
-insert into API_APP (id, appid, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, main_url, contact_name, contact_phone, pwd)
-values ('RSnLoDcV', 'Nztv3WuN', 'dfa2c86c4094f0d4f4507752d850f436', '1', 'thirdTest', '2222222', to_date('23-03-2021 16:24:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:24:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'http://127.0.0.1:9001', '张三丰', '13222222222222', '$2a$10$RPrXJB3zZPcPjgJKkzE1h.AisLN3KUyuu/fbbDfMq9uKUCje2jxJq');
+insert into API_APP (id, appid, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, main_url, contact_name, contact_phone, pwd, code)
+values ('oIV6HEYH', 'roKiiAXn', 'd5206eee30013aa65fa406ed9fe5bb24', '1', 'openApi', '2222222', to_date('23-03-2021 16:18:59', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:18:59', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'http://127.0.0.1:8030', '张三丰', '131111111111', '$2a$10$NiiU5x0zeFznqAKXphlRBeSM/PGafceyjQli4Qlqg3USXF697T7qK', '2102117854919990174');
+insert into API_APP (id, appid, secret, status, name, description, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, main_url, contact_name, contact_phone, pwd, code)
+values ('RSnLoDcV', 'Nztv3WuN', 'dfa2c86c4094f0d4f4507752d850f436', '1', 'thirdTest', '2222222', to_date('23-03-2021 16:24:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('23-03-2021 16:24:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'http://127.0.0.1:9001', '张三丰', '13222222222222', '$2a$10$RPrXJB3zZPcPjgJKkzE1h.AisLN3KUyuu/fbbDfMq9uKUCje2jxJq', null);
 commit;
 prompt 2 records loaded
 prompt Loading API_APPLY...

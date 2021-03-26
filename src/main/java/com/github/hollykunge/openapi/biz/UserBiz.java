@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author: zhuqz
  * @date: 2021/3/3 16:14
@@ -23,7 +25,7 @@ public class UserBiz extends BaseBiz<UserMapper, User> {
     protected String getPageName() {
         return null;
     }
-    public App getUserByName(String name){
+    public List<App> getUserByName(String name){
         return userMapper.getUserByName(name);
     }
    /* public User getUserByName(String name){

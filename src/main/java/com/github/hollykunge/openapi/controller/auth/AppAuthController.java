@@ -6,6 +6,7 @@ package com.github.hollykunge.openapi.controller.auth;
  * @description:
  */
 
+import com.github.hollykunge.openapi.biz.UserRoleBiz;
 import com.github.hollykunge.openapi.config.UserAuthContonstants;
 import com.github.hollykunge.openapi.redis.RedisUtil;
 import com.github.hollykunge.openapi.security.jwt.JwtProperties;
@@ -22,10 +23,14 @@ import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhuqz
@@ -46,6 +51,8 @@ public class AppAuthController {
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRoleBiz userRoleBiz;
     /**
      * rest登录 不使用form登录
      * @param param
@@ -57,8 +64,19 @@ public class AppAuthController {
         String userName = param.getUserName();
         String pwd = param.getPwd();
         //根据输入的用户密码，读取数据库中信息
-        MyUserDetails user = (MyUserDetails) myUserDetailsService.loadUserByUsername(userName);
-        //判断是否有效用户
+        List<MyUserDetails> userDetailsList = myUserDetailsService.loadUsersByUsername(userName);
+        MyUserDetails finalUser = null;
+        for(MyUserDetails myUserDetails: userDetailsList){
+            //验证密码
+            if (passwordEncoder.matches(pwd, myUserDetails.getPassword())) {
+                finalUser = myUserDetails;
+                break;
+            }
+        }
+        if(finalUser == null){
+            throw new BadCredentialsException("PASSWORD INVALID!");
+        }
+        /*//判断是否有效用户
         if (!user.isEnabled()) {
             throw new DisabledException("USER DISABLE");
         } else if (!user.isAccountNonLocked()) {
@@ -67,13 +85,10 @@ public class AppAuthController {
             throw new AccountExpiredException("USER EXPIRED");
         } else if (!user.isCredentialsNonExpired()) {
             throw new CredentialsExpiredException("USER LOGOUT");
-        }
-        //验证密码
-        if (!passwordEncoder.matches(pwd, user.getPassword())) {
-            throw new BadCredentialsException("PASSWORD INVALID!");
-        }
+        }*/
+
         // 生成新token
-        Map<String,String> tokens = jwtTokenUtil.generateToken(user);
+        Map<String,String> tokens = jwtTokenUtil.generateToken(finalUser);
         String accesstoken = tokens.get(jwtTokenUtil.getAccessTokenKey());
         String refreshtoken = tokens.get(jwtTokenUtil.getRefreshTokenKey());
         String rolestoken = tokens.get(jwtTokenUtil.getRoleTokenKey());

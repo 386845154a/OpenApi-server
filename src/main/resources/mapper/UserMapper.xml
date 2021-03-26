@@ -17,6 +17,6 @@
        <!--select id,name,pwd,token from api_user where name = #{name}-->
    <!--</select>-->
     <select id="getUserByName" resultMap="app">
-       select id,name,pwd,status from api_app where name = #{name}
+       select id,name,pwd,status,code from api_app where code = #{name}
    </select>
 </mapper>
