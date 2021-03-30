@@ -25,5 +25,19 @@ public class Service   extends BaseEntity {
     private String blackIp;
     @Column(name = "WHITE_IP")
     private String whiteIp;
+    @Column(name = "MARK")
+    private String mark;
+    @Column(name = "VERSION")
+    private String version;
+    @Column(name = "ENCODE")
+    private String encode;
+    @Column(name = "PARAM")
+    private String param;
+    @Column(name = "ATTCH_FILE")
+    private String attchFile;
+    @Column(name = "CONTENT_TYPE")
+    private String contentType;
+    @Column(name = "NAME")
+    private String name;
 ;
 }

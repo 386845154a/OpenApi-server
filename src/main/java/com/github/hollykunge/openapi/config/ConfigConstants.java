@@ -187,4 +187,16 @@ public class ConfigConstants {
      * 默认编码格式
      */
     public static  final String DEFAULT_ENCODE = "utf-8";
+
+    /**
+     * 内容类型
+     */
+    public static final String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    public static final String CONTENT_TYPE_HTML = "text/html";
+
+    /**
+     * 接口接收编码
+     */
+    public static final String ACCEPT_CHARSET_UTF8 = "UTF-8";
 }

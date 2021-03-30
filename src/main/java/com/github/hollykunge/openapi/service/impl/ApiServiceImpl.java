@@ -24,6 +24,8 @@ import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.PostConstruct;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +127,15 @@ public class ApiServiceImpl implements ApiService {
             if(requestTypeEnum!=null){
                 // 请求头
                 HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
+                String cType = CommonUtil.no2EmptyStr(apiService.getContentType());
+                if(cType.equals(ConfigConstants.CONTENT_TYPE_X_WWW_FORM_URLENCODED)){
+                    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                }else if(cType.equals(ConfigConstants.CONTENT_TYPE_JSON)){
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                }else {
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                }
+
                 //如果是自身服务接口
                 if(appSelfServiceIds.contains(paramVo.getServiceId())){
                     headers.set(ConfigConstants.API_TOKEN_HEADER,appSelfToken);

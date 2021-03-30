@@ -1,5 +1,5 @@
 ???prompt PL/SQL Developer import file
-prompt Created on 2021年3月26日 by Administrator
+prompt Created on 2021年3月30日 by Administrator
 set feedback off
 set define off
 prompt Creating API_APP...
@@ -172,7 +172,14 @@ create table API_SERVICE
   attr3        VARCHAR2(255),
   attr4        VARCHAR2(255),
   black_ip     VARCHAR2(600),
-  white_ip     VARCHAR2(600)
+  white_ip     VARCHAR2(600),
+  mark         VARCHAR2(4000),
+  version      VARCHAR2(30) default '1.0',
+  encode       VARCHAR2(30) default 'UTF-8',
+  param        VARCHAR2(4000),
+  attch_file   VARCHAR2(4000),
+  content_type VARCHAR2(200) default 'application/json',
+  name         VARCHAR2(600)
 )
 tablespace WORKHUB
   pctfree 10
@@ -201,6 +208,20 @@ comment on column API_SERVICE.black_ip
   is '黑名单';
 comment on column API_SERVICE.white_ip
   is '白名单';
+comment on column API_SERVICE.mark
+  is '备注';
+comment on column API_SERVICE.version
+  is '版本';
+comment on column API_SERVICE.encode
+  is '编码';
+comment on column API_SERVICE.param
+  is '参数';
+comment on column API_SERVICE.attch_file
+  is '附件';
+comment on column API_SERVICE.content_type
+  is 'application/json application/x-www-form-urlencoded';
+comment on column API_SERVICE.name
+  is '接口名称';
 
 prompt Creating API_TOKEN...
 create table API_TOKEN
@@ -730,34 +751,34 @@ values ('1', 'ROLE_ADMIN', null, null, null, null, null, null, null, null, null,
 commit;
 prompt 1 records loaded
 prompt Loading API_SERVICE...
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('s050Od68', 'roKiiAXn', 'post', '/OpenApi/notice/sendNotice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('iD3Amulc', 'RoCY84PY', 'get', '/test/getTest1', '1', to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('GMlAnqhY', 'c7jNNCIx', 'get', ' /test/getTest1', '1', to_date('19-03-2021 16:31:25', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('19-03-2021 16:31:25', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('13H8pbxr', '67KpSREk', 'put', '/test/putTest2', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('14H8pbxr', '67KpSREk', 'delete', '/test/deleteTest2?param1={param1}&param2={param2}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('6KH8pbxr', '67KpSREk', 'get', '/test/getTest1', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('7KH8pbxr', '67KpSREk', 'get', '/test/getTest2?param1={param1}&param2={param2}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('8KH8pbxr', '67KpSREk', 'get', '/test/getTest3/{param1}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('9KH8pbxr', '67KpSREk', 'post', '/test/postTest1', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('10H8pbxr', '67KpSREk', 'post', '/test/postTest2', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('11H8pbxr', '67KpSREk', 'delete', '/test/deleteTest1?param1={param1}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('12H8pbxr', '67KpSREk', 'put', '/test/putTest1', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('pYYfHP6e', 'lkx5ltJw', 'get', '/test/getTest1', '1', to_date('07-08-2020 14:03:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:03:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
-insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip)
-values ('s050Od67', 'lQ1JLazI', 'post', '/backGroundMessage/notice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('s050Od68', 'roKiiAXn', 'post', '/OpenApi/notice/sendNotice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('iD3Amulc', 'RoCY84PY', 'get', '/test/getTest1', '1', to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('05-03-2021 16:43:12', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('GMlAnqhY', 'c7jNNCIx', 'get', ' /test/getTest1', '1', to_date('19-03-2021 16:31:25', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('19-03-2021 16:31:25', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('13H8pbxr', '67KpSREk', 'put', '/test/putTest2', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('14H8pbxr', '67KpSREk', 'delete', '/test/deleteTest2?param1={param1}&param2={param2}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('6KH8pbxr', '67KpSREk', 'get', '/test/getTest1', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('7KH8pbxr', '67KpSREk', 'get', '/test/getTest2?param1={param1}&param2={param2}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('8KH8pbxr', '67KpSREk', 'get', '/test/getTest3/{param1}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('9KH8pbxr', '67KpSREk', 'post', '/test/postTest1', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('10H8pbxr', '67KpSREk', 'post', '/test/postTest2', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('11H8pbxr', '67KpSREk', 'delete', '/test/deleteTest1?param1={param1}', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('12H8pbxr', '67KpSREk', 'put', '/test/putTest1', '1', to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('22-06-2020 16:38:33', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('pYYfHP6e', 'lkx5ltJw', 'get', '/test/getTest1', '1', to_date('07-08-2020 14:03:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('07-08-2020 14:03:40', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
+insert into API_SERVICE (id, app_id, request_type, request_url, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, black_ip, white_ip, mark, version, encode, param, attch_file, content_type, name)
+values ('s050Od67', 'lQ1JLazI', 'post', '/backGroundMessage/notice', '1', to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('29-10-2020 08:58:34', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, '1.0', 'UTF-8', null, null, 'application/json', null);
 commit;
 prompt 14 records loaded
 prompt Loading API_TOKEN...
@@ -811,8 +832,12 @@ prompt 12 records loaded
 prompt Loading BUSINESS_NOTICE_BODY_RECOMMEND...
 insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('sMWFz05K', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:28:20', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('dmpGfdnC', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('Cq4IgPOm', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 commit;
-prompt 1 records loaded
+prompt 3 records loaded
 prompt Loading BUSINESS_NOTICE_BODY_SHOW...
 insert into BUSINESS_NOTICE_BODY_SHOW (id, detail_url, type, content_abs, content_detail, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
 values ('uPA9VRZl', 'www.baidu.com', '1', '事件描述', '商店大促销', 'www.tupian.com', '紧急审批', to_date('25-03-2021 15:13:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:13:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
@@ -854,8 +879,12 @@ insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, r
 values ('6zJZ4V7C', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'a0kgDac9', to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:42:38', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('9zF2rtHB', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 801, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'a6x8J0xg', to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('24-03-2021 09:48:41', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('Y90xTiYZ', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'dmpGfdnC', to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('gZikUpG9', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'Cq4IgPOm', to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 commit;
-prompt 15 records loaded
+prompt 17 records loaded
 prompt Enabling triggers for API_APP...
 alter table API_APP enable all triggers;
 prompt Enabling triggers for API_APPLY...
