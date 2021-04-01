@@ -7,6 +7,7 @@ import com.github.hollykunge.openapi.biz.ServiceBiz;
 import com.github.hollykunge.openapi.biz.TokenBiz;
 import com.github.hollykunge.openapi.config.CommonUtil;
 import com.github.hollykunge.openapi.config.ConfigConstants;
+import com.github.hollykunge.openapi.entity.ApiLog;
 import com.github.hollykunge.openapi.entity.App;
 import com.github.hollykunge.openapi.entity.Apply;
 import com.github.hollykunge.openapi.service.ApiService;

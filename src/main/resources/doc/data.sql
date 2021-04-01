@@ -1,5 +1,5 @@
 ???prompt PL/SQL Developer import file
-prompt Created on 2021年3月30日 by Administrator
+prompt Created on 2021年4月1日 by Administrator
 set feedback off
 set define off
 prompt Creating API_APP...
@@ -118,6 +118,77 @@ comment on column API_APPLY.service_id
   is '所申请的调用服务的id';
 comment on column API_APPLY.status
   is '1启用0不启用';
+
+prompt Creating API_LOG...
+create table API_LOG
+(
+  id         VARCHAR2(32) not null,
+  appid      VARCHAR2(32),
+  service_id VARCHAR2(32),
+  time       DATE default sysdate,
+  res        VARCHAR2(4) default '1' not null,
+  msg        VARCHAR2(4000),
+  crt_time   DATE,
+  crt_user   VARCHAR2(255),
+  crt_name   VARCHAR2(255),
+  crt_host   VARCHAR2(255),
+  upd_time   DATE,
+  upd_user   VARCHAR2(255),
+  upd_name   VARCHAR2(255),
+  upd_host   VARCHAR2(255),
+  attr1      VARCHAR2(255),
+  attr2      VARCHAR2(255),
+  attr3      VARCHAR2(255),
+  attr4      VARCHAR2(255),
+  param      VARCHAR2(4000),
+  body       VARCHAR2(4000),
+  return_obj VARCHAR2(4000)
+)
+tablespace WORKHUB
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table API_LOG
+  is '调用日志';
+comment on column API_LOG.id
+  is 'ID';
+comment on column API_LOG.appid
+  is 'app';
+comment on column API_LOG.service_id
+  is '服务id';
+comment on column API_LOG.time
+  is '调用时间';
+comment on column API_LOG.res
+  is '结果1成功0失败';
+comment on column API_LOG.msg
+  is '详细';
+comment on column API_LOG.param
+  is '参数';
+comment on column API_LOG.body
+  is 'body';
+comment on column API_LOG.return_obj
+  is '返回结果';
+alter table API_LOG
+  add constraint LOGMAIN primary key (ID)
+  using index 
+  tablespace WORKHUB
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt Creating API_ROLE...
 create table API_ROLE
@@ -711,6 +782,8 @@ prompt Disabling triggers for API_APP...
 alter table API_APP disable all triggers;
 prompt Disabling triggers for API_APPLY...
 alter table API_APPLY disable all triggers;
+prompt Disabling triggers for API_LOG...
+alter table API_LOG disable all triggers;
 prompt Disabling triggers for API_ROLE...
 alter table API_ROLE disable all triggers;
 prompt Disabling triggers for API_SERVICE...
@@ -743,6 +816,13 @@ insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_n
 values ('a050Od65', 'Nztv3WuN', 's050Od68', '1', null, null, null, null, null, null, null, null, null, null, null, null);
 insert into API_APPLY (id, app_id, service_id, status, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('KLhHco8s', 'roKiiAXn', 's050Od68', '1', to_date('29-10-2020 09:05:57', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, null, null, null, null);
+commit;
+prompt 2 records loaded
+prompt Loading API_LOG...
+insert into API_LOG (id, appid, service_id, time, res, msg, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, param, body, return_obj)
+values ('QxYmZMc5', 'Nztv3WuN', 's050Od68', to_date('01-04-2021 14:37:23', 'dd-mm-yyyy hh24:mi:ss'), '1', null, null, null, null, null, null, null, null, null, null, null, null, null, '{}', '{senderName=发送人, receiverId=123456789, receiverName=接收人, senderOrgName=二院, sourceName=app, senderType=804, status=0, noticeLevel=1, bz=备注说明, msgContent={url=wwww.baidu.com, titile=大促销, time=2021-01-03 15:59:03, source=www.source.com, author=王六六, domain=baidu.com, rsource=resource.com, relevancy=0.9, bz=最新数据}}', null);
+insert into API_LOG (id, appid, service_id, time, res, msg, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, param, body, return_obj)
+values ('AWXh21yf', 'Nztv3WuN', 's050Od68', to_date('01-04-2021 14:44:32', 'dd-mm-yyyy hh24:mi:ss'), '1', null, null, null, null, null, null, null, null, null, null, null, null, null, '{}', '{senderName=发送人, receiverId=123456789, receiverName=接收人, senderOrgName=二院, sourceName=app, senderType=804, status=0, noticeLevel=1, bz=备注说明, msgContent={url=wwww.baidu.com, titile=大促销, time=2021-01-03 15:59:03, source=www.source.com, author=王六六, domain=baidu.com, rsource=resource.com, relevancy=0.9, bz=最新数据}}', '{"result":{"msg":"操作成功","code":"1"},"rel":true,"status":200,"timestamp":"1617259471209"}');
 commit;
 prompt 2 records loaded
 prompt Loading API_ROLE...
@@ -836,8 +916,22 @@ insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, autho
 values ('dmpGfdnC', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('Cq4IgPOm', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('n5nczIoF', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:29:15', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:29:15', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('tG2ltwtI', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:29:39', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:29:39', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('XZK4oJxz', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:30:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:30:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('6sMWp0ps', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:32:31', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:32:35', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('sIp34mJ6', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:33:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:33:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('0Jy8liHj', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:37:21', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:37:21', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_BODY_RECOMMEND (id, url, titile, time, source, author, domain, rsource, relevancy, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('c4T78NdR', 'wwww.baidu.com', '大促销', to_date('03-01-2021 15:59:03', 'dd-mm-yyyy hh24:mi:ss'), 'www.source.com', '王六六', 'baidu.com', 'resource.com', .9, '最新数据', to_date('01-04-2021 14:44:31', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:44:31', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 commit;
-prompt 3 records loaded
+prompt 10 records loaded
 prompt Loading BUSINESS_NOTICE_BODY_SHOW...
 insert into BUSINESS_NOTICE_BODY_SHOW (id, detail_url, type, content_abs, content_detail, img_url, bz, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4, business_id)
 values ('uPA9VRZl', 'www.baidu.com', '1', '事件描述', '商店大促销', 'www.tupian.com', '紧急审批', to_date('25-03-2021 15:13:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('25-03-2021 15:13:02', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null, 'ywdhid');
@@ -883,12 +977,28 @@ insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, r
 values ('Y90xTiYZ', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'dmpGfdnC', to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:05', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
 values ('gZikUpG9', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'Cq4IgPOm', to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('30-03-2021 15:37:06', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('dIXQbpsm', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:29:15', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'n5nczIoF', to_date('01-04-2021 14:29:15', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:29:15', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('Hvd3jE5D', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:29:39', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'tG2ltwtI', to_date('01-04-2021 14:29:39', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:29:39', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('fwOJOflb', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:30:44', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'XZK4oJxz', to_date('01-04-2021 14:30:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:30:44', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('IxYyqYeU', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:32:49', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', '6sMWp0ps', to_date('01-04-2021 14:32:49', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:32:49', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('FAFeysQa', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:33:01', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'sIp34mJ6', to_date('01-04-2021 14:33:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:33:01', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('4q5g5ori', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:37:21', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', '0Jy8liHj', to_date('01-04-2021 14:37:21', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:37:21', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
+insert into BUSINESS_NOTICE_HEADER (id, notice_read, sender_name, receiver_id, receiver_name, sender_org_name, source_name, source_ip, sender_type, time, status, receipt, notice_level, bz, detail_id, crt_time, crt_user, crt_name, crt_host, upd_time, upd_user, upd_name, upd_host, attr1, attr2, attr3, attr4)
+values ('R7uu2ENG', 0, '发送人', '123456789', '接收人', '二院', 'app', null, 804, to_date('01-04-2021 14:44:31', 'dd-mm-yyyy hh24:mi:ss'), 0, null, 1, '备注说明', 'c4T78NdR', to_date('01-04-2021 14:44:31', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, to_date('01-04-2021 14:44:31', 'dd-mm-yyyy hh24:mi:ss'), null, null, null, null, null, null, null);
 commit;
-prompt 17 records loaded
+prompt 24 records loaded
 prompt Enabling triggers for API_APP...
 alter table API_APP enable all triggers;
 prompt Enabling triggers for API_APPLY...
 alter table API_APPLY enable all triggers;
+prompt Enabling triggers for API_LOG...
+alter table API_LOG enable all triggers;
 prompt Enabling triggers for API_ROLE...
 alter table API_ROLE enable all triggers;
 prompt Enabling triggers for API_SERVICE...

@@ -55,6 +55,14 @@ public abstract class BaseBiz<M extends Mapper<T>, T> {
         return id;
     }
 
+    /**
+     * 不进行填充，直接入库
+     * @param entity
+     */
+    public void justInsertSelective(T entity) {
+        mapper.insertSelective(entity);
+    }
+
     public void delete(T entity) {
         mapper.delete(entity);
     }
