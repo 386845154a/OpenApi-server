@@ -1,14 +1,15 @@
 package com.github.hollykunge.openapi.config;
 
-import cn.hutool.Hutool;
 import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author: zhuqz
@@ -112,5 +113,11 @@ public class CommonUtil {
             }
         }
        return false;
+    }
+    public static String getStandTimeFormat() {
+        String STANDARD_DATE_FORMAT_UTC = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        SimpleDateFormat sdf = new SimpleDateFormat(STANDARD_DATE_FORMAT_UTC);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return sdf.format(new Date());
     }
 }

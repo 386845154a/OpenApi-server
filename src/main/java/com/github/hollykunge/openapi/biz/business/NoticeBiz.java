@@ -1,12 +1,21 @@
 package com.github.hollykunge.openapi.biz.business;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.github.hollykunge.openapi.biz.base.BaseBiz;
+import com.github.hollykunge.openapi.config.CommonUtil;
 import com.github.hollykunge.openapi.config.business.BusinessConstants;
+import com.github.hollykunge.openapi.config.business.MessageType;
+import com.github.hollykunge.openapi.config.business.NoticeConst;
+import com.github.hollykunge.openapi.config.business.SocketMsgDetailTypeEnum;
 import com.github.hollykunge.openapi.entity.business.*;
 import com.github.hollykunge.openapi.mapper.business.NoticeMapper;
 import com.github.hollykunge.openapi.mq.SocketMqProducer;
 import com.github.hollykunge.openapi.vo.business.NoticeVo;
+import com.github.hollykunge.openapi.vo.business.msg.NoticeBaseVo;
+import com.github.hollykunge.openapi.vo.business.msg.children.ContactInfoVo;
+import com.github.hollykunge.openapi.vo.business.msg.children.ContentVo;
 import com.github.hollykunge.openapi.vo.business.send.NoticeSendBodyApproveVo;
 import com.github.hollykunge.openapi.vo.business.send.NoticeSendHeaderVo;
 import com.github.hollykunge.openapi.vo.socket.SocketMsgDetailVo;
@@ -18,9 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -59,9 +65,10 @@ public class NoticeBiz   extends BaseBiz<NoticeMapper, NoticeHeader> {
         //openapi 通知协议
         SocketMsgDetailVo detailVo = new SocketMsgDetailVo();
         socketMsgVo.setMsg(detailVo);
+
+
         //发送通知头
         NoticeSendHeaderVo sendHeaderVo = new NoticeSendHeaderVo();
-        detailVo.setData(sendHeaderVo);
         //将参数转换到发送数据里
         BeanUtil.copyProperties(noticeVo,sendHeaderVo);
 
@@ -119,12 +126,55 @@ public class NoticeBiz   extends BaseBiz<NoticeMapper, NoticeHeader> {
         BeanUtils.copyProperties(noticeVo,header);
         header.setDetailId(bodyId);
         String id = this.insertSelective(header);
-
         sendHeaderVo.setNoticeId(id);
 
-
+        //生成通知内容（格式参考研讨）
+        NoticeBaseVo  noticeBaseVo = createMsgVoToSend(noticeVo,sendHeaderVo);
+        //放入通知内容到详细协议里
+        detailVo.setData(noticeBaseVo);
         socketMqProducer.sendSocketMsg(socketMsgVo);
         return BusinessConstants.SUCCESS;
+    }
+
+    private NoticeBaseVo createMsgVoToSend(NoticeVo noticeVo,NoticeSendHeaderVo headerVo){
+        ContactInfoVo contactInfoVo = new ContactInfoVo();
+        contactInfoVo.setId(MessageType.BACKGROUND_NOTICE_ID);
+        contactInfoVo.setAvatar(NoticeConst.BACK_GROUND_AVATAR);
+        contactInfoVo.setName(MessageType.BACK_GROUND_SENDER_NAME);
+        contactInfoVo.setSecretLevel(Integer.parseInt(MessageType.NO_SECRECT_LEVEL));
+        ContentVo contentVo = new ContentVo();
+        SocketMsgDetailTypeEnum socketMsgDetailTypeEnum = SocketMsgDetailTypeEnum.OPEN_API_NOTICE;
+
+        String msgContent = CommonUtil.no2EmptyStr(noticeVo.getMsgContent().toString());
+        contentVo.setTitle(msgContent);
+        contentVo.setType(MessageType.MESSAGE_CONTENT_TYPE_NOTICE);
+        //通知内容详细 处理url、消息来源等等
+        String receiver = CommonUtil.no2EmptyStr(noticeVo.getReceiverId());
+        // 这里模仿的是研讨的代码逻辑 可能并不严谨
+        String status = MessageType.NOTICE_STATUS_TEXT;
+        if(noticeVo.getSenderType() == BusinessConstants.NOTICE_TYPE_RECOMMEND){
+            status = MessageType.NOTICE_STATUS_SUPER_TEXT;
+        }
+        if(noticeVo.getSenderType() == BusinessConstants.NOTICE_TYPE_SYS){
+            status = MessageType.NOTICE_STATUS_CHOICE_WAIT;
+        }
+
+        //openapi的通知值针对单人私聊
+        NoticeBaseVo msgBaseVo = new NoticeBaseVo();
+        msgBaseVo.setContent(contentVo);
+        msgBaseVo.setContactInfo(contactInfoVo);
+        msgBaseVo.setTime(CommonUtil.getStandTimeFormat());
+        msgBaseVo.setIsGroup(false);
+        msgBaseVo.setFromId(MessageType.BACKGROUND_NOTICE_ID);
+        msgBaseVo.setUsername(MessageType.BACK_GROUND_SENDER_NAME);
+        msgBaseVo.setAvatar(NoticeConst.BACK_GROUND_AVATAR);
+        msgBaseVo.setToId(receiver);
+        msgBaseVo.setToName(noticeVo.getReceiverName());
+        msgBaseVo.setStatus(status);
+        msgBaseVo.setId(headerVo.getNoticeId());
+        String noticeDetailJson = JSON.toJSONString(headerVo, SerializerFeature.DisableCircularReferenceDetect);
+        msgBaseVo.setMsgDetail(noticeDetailJson);
+        return msgBaseVo;
     }
 
 }
