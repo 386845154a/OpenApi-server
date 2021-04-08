@@ -26,7 +26,21 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        List<MyUserDetails> list = new ArrayList<>();
+        List<App> users =  userBiz.getUserByName(username);
+        if (users == null || users.isEmpty()){
+            throw new UsernameNotFoundException("App User "+ username +" didn't exist.");
+        }
+        List<String> roles = userRoleBiz.getUserRoleList(username);
+        //格式转化
+        List<GrantedAuthority> authority = roles.stream().map(i->new SimpleGrantedAuthority(i)).collect(Collectors.toList());
+        //用户锁定固定写死
+        boolean lockflg = false;
+        for(App user:users){
+            list.add(new MyUserDetails(user.getCode(),user.getPwd(),lockflg,authority));
+        }
+        //返回第一个用户即可
+        return list.get(0);
     }
     public List<MyUserDetails> loadUsersByUsername(String username) throws UsernameNotFoundException {
         List<MyUserDetails> list = new ArrayList<>();
