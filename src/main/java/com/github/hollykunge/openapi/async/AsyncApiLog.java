@@ -33,6 +33,9 @@ public class AsyncApiLog {
             if(CommonUtil.no2EmptyStr(apiLog.getBody()).length()>1333){
                 apiLog.setBody(apiLog.getBody().substring(0,1333));
             }
+            if(CommonUtil.no2EmptyStr(apiLog.getMsg()).length()>1333){
+                apiLog.setMsg(apiLog.getMsg().substring(0,1333));
+            }
             apiLogBiz.justInsertSelective(apiLog);
         } catch (Exception e) {
             logger.error("异步日志错误");

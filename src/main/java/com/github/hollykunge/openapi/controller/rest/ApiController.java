@@ -63,7 +63,7 @@ public class ApiController {
            throw e;
         }finally {
             //记录日志异步
-            //asyncApiLog.writeApiLog(apiLog);
+            asyncApiLog.writeApiLog(apiLog);
         }
 
     }

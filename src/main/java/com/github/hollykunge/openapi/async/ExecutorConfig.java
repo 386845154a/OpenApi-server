@@ -13,10 +13,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date: 2020/12/10 16:51
  * @description: 线程池
  */
-//@Configuration
-//@EnableAsync
+@Configuration
+@EnableAsync
 public class ExecutorConfig {
-    //@Bean
+    @Bean
     public Executor asyncServiceExecutor() {
         int corePoolSize = 100,  maxPoolSize = 300, queueNum = 3000;
         String threadPrefix = "apiThreadPool-";
