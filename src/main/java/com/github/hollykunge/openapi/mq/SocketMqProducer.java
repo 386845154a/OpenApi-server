@@ -25,25 +25,26 @@ import java.util.Date;
  * @date: 2020/6/2 16:19
  * @description: 信息中心发送消息
  */
-@Component
-public class SocketMqProducer implements RabbitTemplate.ConfirmCallback {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    /**由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入*/
+//@Component
+//public class SocketMqProducer implements RabbitTemplate.ConfirmCallback {
+public class SocketMqProducer  {
+   /* private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    *//**由于rabbitTemplate的scope属性设置为ConfigurableBeanFactory.SCOPE_PROTOTYPE，所以不能自动注入*//*
     private RabbitTemplate rabbitTemplate;
-    /**
+    *//**
      * 构造方法注入rabbitTemplate
-     */
+     *//*
     @Autowired
     public SocketMqProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
         //rabbitTemplate如果为单例的话，那回调就是最后设置的内容
         rabbitTemplate.setConfirmCallback(this);
     }
-    /**
+    *//**
      * 发送socket消息
      * @param msgVo
      * @return
-     */
+     *//*
     public boolean sendSocketMsg(SocketMsgVo msgVo){
         String scode = msgVo.getCode();
         if(scode==null){
@@ -52,20 +53,20 @@ public class SocketMqProducer implements RabbitTemplate.ConfirmCallback {
         }
         CorrelationData correlationId = new CorrelationData(UUIDUtils.generateShortUuid());
         //消息发送与接收确认机制begin
-       /* int init_count = 0;
+       *//* int init_count = 0;
         MQMsgModel mqMsgModel =  this.getMqMsgModel(correlationId.getId(),init_count, MessageType.NEWS_SENDING,new Date(),msgVo);
-        zzMsgCenterConfirmService.saveMsgConfirm(mqMsgModel);*/
+        zzMsgCenterConfirmService.saveMsgConfirm(mqMsgModel);*//*
         //消息发送与接收确认机制end
         doSendMsg(msgVo,correlationId);
         return  true;
     }
 
-    /**
+    *//**
      * 发送消息
      * @param msgVo
      * @param correlationId
      * @return
-     */
+     *//*
     private boolean doSendMsg(SocketMsgVo msgVo,CorrelationData correlationId) {
         String scode = msgVo.getCode();
 
@@ -103,13 +104,13 @@ public class SocketMqProducer implements RabbitTemplate.ConfirmCallback {
         return true;
     }
 
-    /**
+    *//**
      * 消息是否到交换机中都有callback
-     */
+     *//*
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         logger.info("[唯一标识]  " + correlationData);
-        /*String markId = correlationData.getId();
+        *//*String markId = correlationData.getId();
         MQMsgModel mqMsgModel = new MQMsgModel();
         mqMsgModel.setMarks(markId);
         if (ack) {
@@ -120,6 +121,6 @@ public class SocketMqProducer implements RabbitTemplate.ConfirmCallback {
             mqMsgModel.setStatus(MessageType.NEWS_BORKDER_FAILURE);
         }
         //更新消息状态
-        this.zzMsgCenterConfirmService.updateMsgConfirmWithOutConsumer(mqMsgModel);*/
-    }
+        this.zzMsgCenterConfirmService.updateMsgConfirmWithOutConsumer(mqMsgModel);*//*
+    }*/
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class NoticeBodyApproveVo extends NoticeBodyVo{
     @ApiModelProperty("业务单号")
-    private String id  ;
+    private String businessId  ;
     @ApiModelProperty("业务详情")
     private String detailUrl  ;
     @ApiModelProperty("类型")
