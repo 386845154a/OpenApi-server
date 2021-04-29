@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -25,11 +26,13 @@ import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: zhuqz
@@ -47,14 +50,21 @@ public class ApiServiceImpl implements ApiService {
     ApplyBiz applyBiz;
     @Autowired
     TokenBiz tokenBiz;
-
     @Autowired
+    HttpServletRequest request;
     @Qualifier("restTemplate")
     RestTemplate restTemplate;
-
     @Value("${selfAppId}")
     private String selfAppId;
-     //自身app的token
+    @Autowired
+    private RedisTemplate redisTemplate;
+    //校验幂等性（防止频繁重复调接口）
+    @Value("${equalValidFlg}")
+    boolean equalValidFlg;
+    @Value("${equalValidSeconds}")
+    int equalValidSeconds;
+
+    //自身app的token
     private  volatile static String appSelfToken;
     //自身包含的服务列表
     private  volatile static List<String> appSelfServiceIds;
@@ -231,10 +241,31 @@ public class ApiServiceImpl implements ApiService {
      * @return
      */
     private Map<String,Object> validateInf(String appId,OpenApiResVo apiResVo,OpenApiRequestParamVo paramVo){
+
         String validField = "valid";
         String serviceField = "service";
         String serverAppField = "serverApp";
         Map<String,Object> res = new HashMap<>(4);
+        //校验是否频繁重复调用接口（md5）
+        if(equalValidFlg){
+            String token = request.getHeader(ConfigConstants.API_TOKEN_HEADER);
+            //如果是调用接口服务
+            String value = token;
+            String md5 = CommonUtil.md5(paramVo);
+            String key = ConfigConstants.callServiceFrenqucencyRedisPrefix+md5;
+            Object valueInRedis = redisTemplate.opsForValue().get(key);
+            if(valueInRedis!=null && valueInRedis.toString().equals(value)){
+                //相同参数相同token频繁调用接口
+                apiResVo.setCode(ConfigConstants.RES_ERROR_SAME_URL_TOO_FRENQUENCY);
+                apiResVo.setMsg(ConfigConstants.RES_ERROR_SAME_URL_TOO_FRENQUENCY_MSG);
+                res.put(validField,false);
+                return res;
+            }else {
+                redisTemplate.opsForValue().set(key,value,equalValidSeconds, TimeUnit.SECONDS);
+            }
+
+        }
+
         //校验应用是否可用
         Example exampleApp = new Example(App.class);
         Example.Criteria criteriaApp = exampleApp.createCriteria();
@@ -299,6 +330,7 @@ public class ApiServiceImpl implements ApiService {
             res.put(validField,false);
             return res;
         }
+
         res.put(validField,true);
         res.put(serviceField,service);
         res.put(serverAppField,ServerApp);

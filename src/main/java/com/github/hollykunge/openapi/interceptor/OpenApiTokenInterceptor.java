@@ -16,6 +16,7 @@ import com.github.hollykunge.openapi.vo.res.base.ObjectRestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -46,6 +47,7 @@ public class OpenApiTokenInterceptor  implements HandlerInterceptor {
     private ServiceBiz serviceBiz;
     @Autowired
     private TokenBiz tokenBiz;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //校验token是否存在

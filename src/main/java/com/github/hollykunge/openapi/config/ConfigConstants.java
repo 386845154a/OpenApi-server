@@ -160,6 +160,15 @@ public class ConfigConstants {
      */
     public static  final String RES_ERROR_REGISTER_MAIN_URL_EXIST_MSG = "注册的app主页已经存在";
     /**
+     * 操作结果失败 相同参数频繁调用
+     */
+    public static  final String RES_ERROR_SAME_URL_TOO_FRENQUENCY = "19";
+    /**
+     * 操作结果失败 相同参数频繁调用 文本
+     */
+    public static  final String RES_ERROR_SAME_URL_TOO_FRENQUENCY_MSG = "相同参数接口频繁调用";
+
+    /**
      * 请求类型get
      */
     public static  final String REQUEST_TYPE_GET = "get";
@@ -199,4 +208,12 @@ public class ConfigConstants {
      * 接口接收编码
      */
     public static final String ACCEPT_CHARSET_UTF8 = "UTF-8";
+    /**
+     * 调用接口URL结尾
+     */
+    public static final String callServiceSuffix = "/openApi/service";
+    /**
+     * 调用接口URL结尾
+     */
+    public static final String callServiceFrenqucencyRedisPrefix = "openapi:serviceFrequency:";
 }

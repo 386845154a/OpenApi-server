@@ -2,6 +2,7 @@ package com.github.hollykunge.openapi.config;
 
 import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -119,5 +120,8 @@ public class CommonUtil {
         SimpleDateFormat sdf = new SimpleDateFormat(STANDARD_DATE_FORMAT_UTC);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(new Date());
+    }
+    public static String md5(Object obj){
+        return DigestUtils.md5DigestAsHex(CommonUtil.no2EmptyStr(obj).getBytes());
     }
 }
