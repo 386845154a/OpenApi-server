@@ -53,7 +53,13 @@ public class ApiController {
                 apiLog.setRes(ConfigConstants.RES_ERROR_SYSTEM);
                 apiLog.setMsg(CommonUtil.no2EmptyStr(openApiResVo.getMsg()));
             }
-            apiLog.setReturnObj(CommonUtil.no2EmptyStr(openApiResVo.getRes()));
+            try {
+                apiLog.setReturnObj(CommonUtil.no2EmptyStr(openApiResVo.getRes()));
+            } catch (Exception e) {
+                logger.error("api 接口日志出错！");
+                logger.error(CommonUtil.getExceptionMessage(e));
+                apiLog.setReturnObj("");
+            }
             return openApiResVo;
         } catch (Exception e) {
             logger.error("api 接口调用出错！");

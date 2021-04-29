@@ -46,8 +46,8 @@ public class NoticeBiz   extends BaseBiz<NoticeMapper, NoticeHeader> {
     NoticeBodyUpdateBiz noticeBodyUpdateBiz;
     @Autowired
     NoticeBodyRecommendBiz noticeBodyRecommendBiz;
-    @Autowired
-    SocketMqProducer socketMqProducer;
+//    @Autowired
+//    SocketMqProducer socketMqProducer;
     @Override
     protected String getPageName() {
         return null;
@@ -132,7 +132,7 @@ public class NoticeBiz   extends BaseBiz<NoticeMapper, NoticeHeader> {
         NoticeBaseVo  noticeBaseVo = createMsgVoToSend(noticeVo,sendHeaderVo);
         //放入通知内容到详细协议里
         detailVo.setData(noticeBaseVo);
-        socketMqProducer.sendSocketMsg(socketMsgVo);
+        //socketMqProducer.sendSocketMsg(socketMsgVo);
         return BusinessConstants.SUCCESS;
     }
 

@@ -1,12 +1,14 @@
 package com.github.hollykunge.openapi.vo.business;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * @author: zhuqz
  * @date: 2021/3/25 14:46
  * @description: 推荐
  */
+@Data
 public class NoticeBodyRecommendVo extends NoticeBodyVo{
     @ApiModelProperty("链接地址")
     private String url       ;

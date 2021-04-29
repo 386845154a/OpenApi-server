@@ -25,10 +25,10 @@ import org.springframework.context.annotation.Scope;
  Channel:消息通道,在客户端的每个连接里,可建立多个channel.
  */
 
-@Configuration
+//@Configuration
 public class RabbitConfig {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    /*private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${spring.rabbitmq.host}")
     private String host;
@@ -41,8 +41,8 @@ public class RabbitConfig {
 
     @Value("${spring.rabbitmq.password}")
     private String password;
-    /**socket消息队列 end*/
-    /*来自socket的通知：研讨服务进行人员会议、群组绑定*/
+    *//**socket消息队列 end*//*
+    *//*来自socket的通知：研讨服务进行人员会议、群组绑定*//*
     //public static final String QUEUE_CHAT_USER_TEAM_BIND  = "queue_chat_user_team_bind";
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -68,5 +68,5 @@ public class RabbitConfig {
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(new Jackson2JsonMessageConverter());
         return factory;
-    }
+    }*/
 }

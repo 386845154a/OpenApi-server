@@ -1,15 +1,17 @@
 package com.github.hollykunge.openapi.vo.business;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * @author: zhuqz
  * @date: 2021/3/25 14:33
  * @description: 展示通知
  */
+@Data
 public class NoticeBodyShowVo  extends NoticeBodyVo{
     @ApiModelProperty("业务单号")
-    private String id  ;
+    private String businessId  ;
     @ApiModelProperty("查看详情地址")
     String detailUrl     ;
     @ApiModelProperty("类型")

@@ -1,7 +1,7 @@
 package com.github.hollykunge.openapi.vo.business;
 
 import io.swagger.annotations.ApiModelProperty;
-
+import lombok.Data;
 
 
 /**
@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date: 2021/3/25 14:38
  * @description: 数据更新通知vo
  */
+@Data
 public class NoticeBodyUpdateVo extends NoticeBodyVo{
     @ApiModelProperty("项目名称")
     private String projectName ;
