@@ -15,3 +15,8 @@
 * BUSINESS_NOTICE_BODY_UPDATE       协议内容-数据更新
 * BUSINESS_NOTICE_BODY_RECOMMEND    协议内容-推荐
 应用流程
+
+
+## License
+
+MIT
